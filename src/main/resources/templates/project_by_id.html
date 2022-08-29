@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Projects</title>
+    <link th:href="@{/styles/style.css}" rel="stylesheet"/>
+</head>
+<body>
+<h3 th:text="${#authentication.getPrincipal().getUsername()}"></h3>
+<span>
+    <form th:action="@{/logout}" th:method="POST">
+        <input type="submit" value="Log out"/>
+    </form>
+</span>
+<hr/>
+
+<nav style="display: table">
+    <div style="display: table-cell">
+        <form th:action="@{/projects}" th:method="GET">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <input type="submit" value="projects"/>
+        </form>
+        <form th:action="@{'/projects/'+ ${project.getId()}+'/tasks'}" th:method="GET">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <input type="submit" value="tasks"/>
+        </form>
+        <form th:action="@{'/projects/'+ ${project.getId()} +'/edit'}" th:method="GET" >
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <input type="submit" value="edit"/>
+        </form>
+        <form th:action="@{'/projects/'+ ${project.getId()}}" th:method="delete" >
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <input type="submit" value="delete"/>
+        </form>
+    </div>
+</nav>
+<hr/>
+
+<div>
+
+    <table id="project_table" style="width: 75%">
+        <thead>
+        <tr>
+            <th th:text="${project.getProjectName()}"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Id</td>
+            <td>Employee count</td>
+            <td>Creation date</td>
+            <td>Creator name</td>
+            <td>Programming language</td>
+            <td>Application server</td>
+            <td>Database</td>
+        </tr>
+        <tr>
+            <td th:text="${project.getId()}"></td>
+            <td th:text="${project.getEmployeeCount()}"></td>
+            <td th:text="${project.getCreationDateTime()}"></td>
+            <td th:text="${project.getCreator()} == null ? 'Empty' : ${project.getCreator().getUsername()}"></td>
+            <td th:text="${project.getProgrammingLanguage()} == null ? 'Empty' : ${project.getProgrammingLanguage().getLanguageName()}"></td>
+            <td th:text="${project.getApplicationServer()} == null ? 'Empty' : ${project.getApplicationServer().getServerName()}"></td>
+            <td th:text="${project.getDatabase()} == null ? 'Empty' : ${project.getDatabase().getDatabaseName()}"></td>
+        </tr>
+        <tr>
+            <td>Description</td>
+        </tr>
+        <tr>
+            <td th:text="${project.getDescription()}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

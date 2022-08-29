@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Projects</title>
+    <link th:href="@{/styles/style.css}" rel="stylesheet"/>
+</head>
+<body>
+<h3 th:text="${#authentication.getPrincipal().getUsername()}"></h3>
+<span>
+    <form th:action="@{/logout}" th:method="POST">
+        <input type="submit" value="Log out"/>
+    </form>
+</span>
+
+<hr/>
+
+<nav style="display: table">
+    <div style="display: table-cell">
+        <form th:action="@{/projects/new}" th:method="GET">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <input type="submit" value="New project"/>
+        </form>
+    </div>
+</nav>
+<hr/>
+
+<h4>Filter, Sort, Pageable</h4>
+<form th:method="GET" th:action="@{/projects}">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <input type="hidden" th:name="isFiltering" th:value="true"/>
+    <table id="filtering_table_1" style="width: 75%">
+        <thead>
+        <tr>
+            <th>lang name</th>
+            <th>app server</th>
+            <th>database</th>
+            <th>employee operation</th>
+            <th>employee value</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <select name="programmingLanguage" id="projectProgLang">
+                    <option th:type="text" th:value="none">Please select...</option>
+                    <option th:type="text" th:each="progLang, iter : ${progLangs}"
+                            th:value="${iter.index}"
+                            th:text="${progLang.getLanguageName()}"></option>
+                </select>
+            </td>
+            <td>
+                <select name="applicationServer" id="projectAppServer">
+                    <option th:type="text" th:value="none">Please select...</option>
+                    <option th:type="text" th:each="appServer, iter : ${appServers}"
+                            th:value="${iter.index}"
+                            th:text="${appServer.getServerName()}"></option>
+                </select>
+            </td>
+            <td>
+                <select name="database" id="projectDatabase">
+                    <option th:type="text" th:value="none">Please select...</option>
+                    <option th:type="text" th:each="database, iter : ${databases}"
+                            th:value="${iter.index}"
+                            th:text="${database.getDatabaseName()}"></option>
+                </select>
+            </td>
+            <td>
+                <select name="employeeOperation" id="employeeOperation">
+                    <option th:type="text" th:value="none">Please select...</option>
+                    <option th:type="text" th:value="more">Equal or greater (>=)</option>
+                    <option th:type="text" th:value="less">Equal or less (<=)</option>
+                </select>
+            </td>
+            <td>
+                <input type="text" name="employeeCount" id="employeeCount"/>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <table id="filtering_table_2" style="width: 75%">
+        <thead>
+        <tr>
+            <th>Sort type</th>
+            <th>Sort column</th>
+            <th>Items on page</th>
+            <th>Page number</th>
+            <th>Total page count</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+
+            <td>
+                <select name="sortType" id="sortType">
+                    <option th:type="text" th:value="none">Please select...</option>
+                    <option th:type="text" th:value="asc">Ascending (min -> max)</option>
+                    <option th:type="text" th:value="desc">Descending (min <- max)</option>
+                </select>
+            </td>
+            <td>
+                <select th:object="${page}" name="sortField" id="sortField">
+                    <option th:type="text" th:value="none">Please select...</option>
+                    <option th:type="text" th:value="id">Project id</option>
+                    <option th:type="text" th:value="projectName">Project name</option>
+                    <option th:type="text" th:value="employeeCount">Employee count</option>
+                    <option th:type="text" th:value="creationDateTime">Creation date time</option>
+                </select>
+            </td>
+
+
+            <td>
+                <input type="text" name="pageItemsCount" id="pageItemsCount" th:value="${pageItemsCount}"/>
+            </td>
+            <td>
+                <input type="text" name="pageNumber" id="pageNumber" th:value="${pageNumber}"/>
+            </td>
+            <td>
+                <p th:text="${page.getTotalPages()}"></p>
+            </td>
+
+        </tr>
+        </tbody>
+
+    </table>
+
+
+    <input type="submit" value="Search">
+</form>
+
+    <table id="project_table" style="width: 75%">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Project id</th>
+            <th>Project name</th>
+            <th>Employee count</th>
+            <th>Creator username</th>
+            <th>Creation date</th>
+            <th>Programming language</th>
+            <th>Database</th>
+            <th>Application server</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="project : ${projects}">
+            <td><a th:href="@{/projects/{id}(id=${project.getId()})}" th:text="OPEN"></a></td>
+            <td th:text="${project.getId()}"></td>
+            <td th:text="${project.getProjectName()}"></td>
+            <td th:text="${project.getEmployeeCount()}"></td>
+            <td th:text="${project.getCreator()} == null ? 'Empty' : ${project.getCreator().getUsername()}"></td>
+            <td th:text="${#temporals.format(project.getCreationDateTime(),'dd-MM-yyyy HH:mm')}"
+            </td>
+            <td th:text="${project.getProgrammingLanguage()} == null ? 'Empty' : ${project.getProgrammingLanguage().getLanguageName()}"></td>
+            <td th:text="${project.getDatabase()} == null ? 'Empty' : ${project.getDatabase().getDatabaseName()}"></td>
+            <td th:text="${project.getApplicationServer()} == null ? 'Empty' : ${project.getApplicationServer().getServerName()}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

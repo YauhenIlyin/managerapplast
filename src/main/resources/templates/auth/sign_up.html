@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign up</title>
+    <!-- <link th:href="@{/styles/style.css}" rel="stylesheet"/> -->
+    <style>
+        /* Style inputs */
+        input[type=text], select {
+            width: 200px;
+            padding: 12px 20px;
+            margin: 8px 4px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input [type=password], select {
+            width: 200px;
+            padding: 12px 20px;
+            margin: 8px 4px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        /* Style the submit button */
+        input[type=submit] {
+            width: 120px;
+            background-color: #04AA6D;
+            color: white;
+            padding: 8px 12px;
+            margin: 8px 4px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Add a background color to the submit button on mouse-over */
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <form th:action="@{/auth/signin}" th:method="GET">
+        <input type="submit" value="Sign in"/>
+    </form>
+</div>
+<hr/>
+<form th:method="POST" th:action="@{/auth/signup}" th:object="${user}">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <label for="firstName">Input First name (1-36 characters): </label>
+    <input type="text" th:field="*{firstName}" id="firstName"/>
+    <div style="color:red" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+    <br/>
+    <label for="lastName">Input Last name (1-36 characters): </label>
+    <input type="text" th:field="*{lastName}" id="lastName"/>
+    <div style="color:red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+    <br/>
+    <label for="email">Input email: </label>
+    <input type="text" th:field="*{email}" id="email"/>
+    <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+    <br/>
+    <label for="username">Input username (4-20 characters)</label>
+    <input type="text" th:field="*{username}" id="username"/>
+    <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+    <br/>
+    <label for="password">Input password (4-36 characters)</label>
+    <input type="password" th:field="*{password}" id="password"/>
+    <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+    <br/>
+    <label for="repeatPassword">Repeat password (4-36 characters)</label>
+    <input type="password" th:field="*{repeatPassword}" id="repeatPassword"/>
+    <div style="color:red" th:if="${#fields.hasErrors('repeatPassword')}" th:errors="*{repeatPassword}"></div>
+    <br/>
+    <input type="submit" value="Sign up!"/>
+</form>
+
+</body>
+</html>

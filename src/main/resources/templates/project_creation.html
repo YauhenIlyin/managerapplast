@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create new project</title>
+    <link th:href="@{/styles/style.css}" rel="stylesheet" />
+</head>
+<body>
+<span th:text="${#authentication.getPrincipal().getUsername()}"></span>
+<div>
+    <form th:action="@{/logout}" th:method="POST">
+        <input type="submit" value="Log out"/>
+    </form>
+</div>
+<hr/>
+<nav style="display: table">
+    <div style="display: table-cell">
+        <form th:action="@{/projects}" th:method="GET">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <input type="submit" value="Projects"/>
+        </form>
+    </div>
+</nav>
+
+<form th:method="POST" th:action="@{/projects}" th:object="${project}" th:list="progLanguages">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <label style="width: 200px" for="projectName">Input Project name (1-30 characters): </label>
+    <input style="width: 200px" type="text" th:field="*{projectName}" id="projectName"/>
+    <div style="color:red" th:if="${#fields.hasErrors('projectName')}" th:errors="*{projectName}"></div>
+    <br/>
+    <label style="width: 200px" for="description">Description (1-400 characters): </label>
+    <input style="width: 200px" type="text" th:field="*{description} " id="description"/>
+    <div style="color:red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+    <br/>
+    <label style="width: 200px" for="employeeCount">Employee count: </label>
+    <input style="width: 200px" type="text" th:field="*{employeeCount}" id="employeeCount"/>
+    <div style="color:red" th:if="${#fields.hasErrors('employeeCount')}" th:errors="*{employeeCount}"></div>
+    <br/>
+    <hr/>
+    <select th:object="${project}" th:field="*{programmingLanguage}" id="projectProgLang">
+        <option th:value="null">Please select...</option>
+        <option th:each="progLang, iter : ${progLangs}" th:value="${iter.index}" th:text="${progLang.getLanguageName()}"></option>
+    </select>
+
+    <hr/>
+    <select th:object="${project}" th:field="*{applicationServer}" id="projectAppServer">
+        <option th:value="null">Please select...</option>
+        <option th:each="appServer, iter : ${appServers}" th:value="${iter.index}" th:text="${appServer.getServerName()}"></option>
+    </select>
+
+    <hr/>
+    <select th:object="${project}" th:field="*{database}" id="projectDatabase">
+        <option th:value="null">Please select...</option>
+        <option th:each="database, iter : ${databases}" th:value="${iter.index}" th:text="${database.getDatabaseName()}"></option>
+    </select>
+    <input type="submit" value="Create project"/>
+</form>
+
+</body>
+</html>
