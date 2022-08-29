@@ -2,9 +2,6 @@ package by.ilyin.manager.evidence;
 
 public class KeyWordsRequest {
 
-    private KeyWordsRequest() {
-    }
-
     public static final String PROJECTS = "projects";
     public static final String PROJECT = "project";
     public static final String PROJECT_ID = "projectId";
@@ -24,5 +21,8 @@ public class KeyWordsRequest {
     public static final String PAGE_ITEMS_COUNT_ON_ONE = "pageItemsCount";
     public static final long PAGE_DEFAULT_COUNT_ITEMS_ON_ONE = 3;
     public static final long PAGE_DEFAULT_CURRENT_NUMBER = 0;
+
+    private KeyWordsRequest() {
+    }
 
 }

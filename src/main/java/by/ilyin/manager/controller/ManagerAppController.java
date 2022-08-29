@@ -1,11 +1,14 @@
 package by.ilyin.manager.controller;
 
+import by.ilyin.manager.controller.command.Command;
+import by.ilyin.manager.controller.command.CommandFactory;
 import by.ilyin.manager.controller.command.SessionRequestContent;
 import by.ilyin.manager.controller.command.project.*;
 import by.ilyin.manager.controller.command.task.TaskCreateCommand;
 import by.ilyin.manager.controller.command.task.TaskFindAllCommand;
 import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.entity.Task;
+import by.ilyin.manager.evidence.CommandName;
 import by.ilyin.manager.evidence.KeyWordsApp;
 import by.ilyin.manager.evidence.KeyWordsRequest;
 import by.ilyin.manager.util.AppBaseDataCore;
@@ -41,6 +44,7 @@ public class ManagerAppController {
     private ProjectDeleteCommand projectDeleteCommand;
     private TaskFindAllCommand taskFindAllCommand;
     private TaskCreateCommand taskCreateCommand;
+    private CommandFactory commandFactory;
 
     @Autowired
     public ManagerAppController(AppBaseDataCore appBaseDataCore,
@@ -54,7 +58,8 @@ public class ManagerAppController {
                                 ProjectUpdateCommand projectUpdateCommand,
                                 ProjectDeleteCommand projectDeleteCommand,
                                 TaskFindAllCommand taskFindAllCommand,
-                                TaskCreateCommand taskCreateCommand) {
+                                TaskCreateCommand taskCreateCommand,
+                                CommandFactory commandFactory) {
         this.appBaseDataCore = appBaseDataCore;
         this.sessionRequestContent = sessionRequestContent;
         this.projectRequestValidator = projectRequestValidator;
@@ -67,13 +72,17 @@ public class ManagerAppController {
         this.projectDeleteCommand = projectDeleteCommand;
         this.taskFindAllCommand = taskFindAllCommand;
         this.taskCreateCommand = taskCreateCommand;
+        this.commandFactory = commandFactory;
     }
 
     @GetMapping("")
     public String projectsPage(Model model, HttpServletRequest request) {
         sessionRequestContent.initialize(request);
         sessionRequestContent.initializePage(request, projectRequestValidator);
-        projectFindAllCommand.execute(sessionRequestContent);
+        //CommandType.PROJECT_FIND_ALL.getCommandBeanType().execute(sessionRequestContent);
+        Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_FIND_ALL);
+        command.execute(sessionRequestContent);
+        //projectFindAllCommand.execute(sessionRequestContent); //todo
         List<Project> projects;
         projects = (List) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PROJECTS);
         Page page = (Page) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PAGE_PAGE);

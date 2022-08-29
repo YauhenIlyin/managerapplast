@@ -2,9 +2,6 @@ package by.ilyin.manager.evidence;
 
 public class KeyWordsApp {
 
-    private KeyWordsApp() {
-    }
-
     //todo refactoring names
     public static final String USER_TABLE_NAME = "users";
     public static final String USERS_ID = "id";
@@ -72,4 +69,8 @@ public class KeyWordsApp {
 
     public static final String ROLE_ADMIN_VALUE = "ROLE_ADMIN";
     public static final String ROLE_USER_VALUE = "ROLE_USER";
+
+    private KeyWordsApp() {
+    }
+
 }
