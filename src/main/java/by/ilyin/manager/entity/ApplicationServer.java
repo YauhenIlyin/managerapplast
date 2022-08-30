@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = KeyWordsApp.APP_SERVER_TABLE_NAME)
-public class ApplicationServer {
+public class ApplicationServer extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

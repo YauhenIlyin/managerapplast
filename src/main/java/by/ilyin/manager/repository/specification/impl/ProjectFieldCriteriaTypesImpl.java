@@ -1,10 +1,16 @@
-package by.ilyin.manager.repository.specification;
+package by.ilyin.manager.repository.specification.impl;
+
+import by.ilyin.manager.repository.specification.FieldCriteriaTypes;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
-public class ProjectFieldCriteriaTypes {
+@Component
+public class ProjectFieldCriteriaTypesImpl implements FieldCriteriaTypes {
 
-    static {
+    private final HashMap<String,Boolean> isAndProjectCriteriaTypes;
+
+    private ProjectFieldCriteriaTypesImpl() {
         HashMap<String, Boolean> criteriaTypes = new HashMap();
         criteriaTypes.put("id", true);
         criteriaTypes.put("employeeCount", true);
@@ -15,12 +21,7 @@ public class ProjectFieldCriteriaTypes {
         isAndProjectCriteriaTypes = criteriaTypes;
     }
 
-    private static final HashMap<String,Boolean> isAndProjectCriteriaTypes;
-
-    private ProjectFieldCriteriaTypes() {
-    }
-
-    public static boolean isAndProjectCriteria(String fieldName) {
+    public boolean isAndProjectCriteria(String fieldName) {
         boolean result = false;
         if (isAndProjectCriteriaTypes.containsKey(fieldName)) {
             result = isAndProjectCriteriaTypes.get(fieldName);

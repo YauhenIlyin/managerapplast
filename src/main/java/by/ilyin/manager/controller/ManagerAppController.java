@@ -7,9 +7,7 @@ import by.ilyin.manager.controller.command.project.*;
 import by.ilyin.manager.controller.command.task.TaskCreateCommand;
 import by.ilyin.manager.controller.command.task.TaskFindAllCommand;
 import by.ilyin.manager.entity.Project;
-import by.ilyin.manager.entity.Task;
 import by.ilyin.manager.evidence.CommandName;
-import by.ilyin.manager.evidence.KeyWordsApp;
 import by.ilyin.manager.evidence.KeyWordsRequest;
 import by.ilyin.manager.util.AppBaseDataCore;
 import by.ilyin.manager.util.validator.ProjectEntityValidator;
@@ -19,13 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -74,15 +69,13 @@ public class ManagerAppController {
         this.taskCreateCommand = taskCreateCommand;
         this.commandFactory = commandFactory;
     }
-
-    @GetMapping("")
-    public String projectsPage(Model model, HttpServletRequest request) {
+/*
+    @GetMapping("w")
+    public String _projectsPage(Model model, HttpServletRequest request) {
         sessionRequestContent.initialize(request);
         sessionRequestContent.initializePage(request, projectRequestValidator);
-        //CommandType.PROJECT_FIND_ALL.getCommandBeanType().execute(sessionRequestContent);
         Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_FIND_ALL);
         command.execute(sessionRequestContent);
-        //projectFindAllCommand.execute(sessionRequestContent); //todo
         List<Project> projects;
         projects = (List) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PROJECTS);
         Page page = (Page) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PAGE_PAGE);
@@ -91,7 +84,21 @@ public class ManagerAppController {
         model.addAttribute(KeyWordsRequest.PAGE_PAGE, page);
         return "projects";
     }
-
+*/
+    @GetMapping("")
+    public String projectsPage(Model model, HttpServletRequest request) {
+        sessionRequestContent.initialize(request);
+        Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_FIND_ALL);
+        command.execute(sessionRequestContent);
+        List<Project> projects;
+        projects = (List) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PROJECTS);
+        Page page = (Page) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PAGE_PAGE);
+        basicInitializeProjectModel(model);
+        model.addAttribute(KeyWordsRequest.PROJECTS, projects);
+        model.addAttribute(KeyWordsRequest.PAGE_PAGE, page);
+        return "projects";
+    }
+/*
     @GetMapping("/new")
     public String projectCreationPage(@ModelAttribute("project") Project project,
                                       Model model) {
@@ -269,7 +276,7 @@ public class ManagerAppController {
         model.addAttribute(KeyWordsRequest.TASK, task);
         return mav;
     }
-
+*/
 
     private void basicInitializeProjectModel(ModelAndView model) {
         model.getModel().put("progLangs", appBaseDataCore.getProgrammingLanguageList());

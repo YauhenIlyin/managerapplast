@@ -1,6 +1,8 @@
 package by.ilyin.manager.repository.specification;
 
+import by.ilyin.manager.entity.BaseEntity;
 import by.ilyin.manager.entity.Project;
+import by.ilyin.manager.repository.specification.impl.ProjectFieldCriteriaTypesImpl;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
@@ -11,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Scope("prototype")
-public class ProjectSpecificationBuilder {
+public class ProjectSpecificationBuilder <T extends BaseEntity> {
 
     private final List<SearchCriteria> params;
 
@@ -33,7 +35,7 @@ public class ProjectSpecificationBuilder {
         return this;
     }
 
-    public Specification<Project> build() {
+    public Specification<T> build(FieldCriteriaTypes fieldCriteriaTypes) {
         if (params.size() == 0) {
             return null;
         }
@@ -41,14 +43,14 @@ public class ProjectSpecificationBuilder {
                 .map(ProjectSpecification::new)
                 .collect(Collectors.toList());
         String currentCriteriaName = params.get(0).getFieldName();
-        boolean isAndCurrent = ProjectFieldCriteriaTypes.isAndProjectCriteria(currentCriteriaName);
+        boolean isAndCurrent = fieldCriteriaTypes.isAndProjectCriteria(currentCriteriaName);
         Specification result = specs.get(0);
         for (int i = 1; i < params.size(); i++) {
             result = isAndCurrent ?
                     Specification.where(result).and(specs.get(i)) :
                     Specification.where(result).or(specs.get(i));
             currentCriteriaName = params.get(0).getFieldName();
-            isAndCurrent = ProjectFieldCriteriaTypes.isAndProjectCriteria(currentCriteriaName);
+            isAndCurrent = fieldCriteriaTypes.isAndProjectCriteria(currentCriteriaName);
         }
         return result;
     }

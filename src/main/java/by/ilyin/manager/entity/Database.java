@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = KeyWordsApp.DATABASE_TABLE_NAME)
-public class Database {
+public class Database extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

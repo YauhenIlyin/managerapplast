@@ -12,7 +12,7 @@ import static by.ilyin.manager.evidence.KeyWordsApp.*;
 
 @Entity
 @Table(name = PROJECT_TABLE_NAME)
-public class Project {
+public class Project extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

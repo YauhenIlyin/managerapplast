@@ -15,7 +15,7 @@ import static by.ilyin.manager.evidence.KeyWordsApp.*;
 
 @Entity
 @Table(name = USER_TABLE_NAME)
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @Column(name = USERS_ID)

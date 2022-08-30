@@ -13,7 +13,7 @@ import static by.ilyin.manager.evidence.KeyWordsApp.TASKS_IS_DELETED;
 
 @Entity
 @Table(name = TASK_TABLE_NAME)
-public class Task {
+public class Task extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
