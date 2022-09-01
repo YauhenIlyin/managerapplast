@@ -25,6 +25,10 @@ public class KeyWordsSessionRequest {
     public static final String TASKS = "tasks";
     public static final String TASK = "task";
 
+    public static final String DATABASES = "databases";
+    public static final String APP_SERVERS = "appServers";
+    public static final String PROG_LANGS = "progLangs";
+
     public static final String SORT_TYPE = "sortType";
     public static final String SORT_SORT_FIELD = "sortField";
     public static final String ASC_SORT_VALUE = "asc";

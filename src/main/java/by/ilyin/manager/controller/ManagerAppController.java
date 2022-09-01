@@ -3,17 +3,22 @@ package by.ilyin.manager.controller;
 import by.ilyin.manager.controller.command.Command;
 import by.ilyin.manager.controller.command.CommandFactory;
 import by.ilyin.manager.controller.command.SessionRequestContent;
+import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.evidence.CommandName;
+import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.util.AppBaseDataCore;
+import by.ilyin.manager.util.ModelViewDataBuilder;
 import by.ilyin.manager.util.validator.ProjectEntityValidator;
 import by.ilyin.manager.util.validator.impl.ProjectRequestValidator;
 import by.ilyin.manager.util.validator.impl.TaskEntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/projects")
 public class ManagerAppController {
@@ -24,6 +29,7 @@ public class ManagerAppController {
     private ProjectEntityValidator projectEntityValidator;
     private TaskEntityValidator taskEntityValidator;
     private CommandFactory commandFactory;
+    private ModelViewDataBuilder projectModelViewInitializer;
 
     @Autowired
     public ManagerAppController(AppBaseDataCore appBaseDataCore,
@@ -31,13 +37,15 @@ public class ManagerAppController {
                                 ProjectRequestValidator projectRequestValidator,
                                 ProjectEntityValidator projectEntityValidator,
                                 TaskEntityValidator taskEntityValidator,
-                                CommandFactory commandFactory) {
+                                CommandFactory commandFactory,
+                                @Qualifier("projectModelViewDataBuilderImpl") ModelViewDataBuilder projectModelViewInitializer) {
         this.appBaseDataCore = appBaseDataCore;
         this.sessionRequestContent = sessionRequestContent;
         this.projectRequestValidator = projectRequestValidator;
         this.projectEntityValidator = projectEntityValidator;
         this.taskEntityValidator = taskEntityValidator;
         this.commandFactory = commandFactory;
+        this.projectModelViewInitializer = projectModelViewInitializer;
     }
 
     @GetMapping("")
@@ -50,13 +58,20 @@ public class ManagerAppController {
         return model;
     }
 
-/*
     @GetMapping("/new")
-    public String projectCreationPage(@ModelAttribute("project") Project project,
-                                      Model model) {
-        basicInitializeProjectModel(model);
+    public ModelAndView projectCreationPage(@ModelAttribute("project") Project project,
+                                            ModelAndView model) {
+        model.addObject(KeyWordsSessionRequest.DATABASES, appBaseDataCore.getDatabaseList());
+        model.addObject(KeyWordsSessionRequest.APP_SERVERS, appBaseDataCore.getApplicationServerList());
+        model.
+
+
+                basicInitializeProjectModel(model);
         return "project_creation";
     }
+
+    /*
+
 
     @PostMapping("")
     public ModelAndView createProject(Model model,
