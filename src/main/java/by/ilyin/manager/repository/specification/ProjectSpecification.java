@@ -1,7 +1,7 @@
 package by.ilyin.manager.repository.specification;
 
 import by.ilyin.manager.entity.Project;
-import by.ilyin.manager.evidence.KeyWordFilterProcess;
+import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -22,17 +22,17 @@ public class ProjectSpecification implements Specification<Project> {
         Predicate predicate;
         String criteriaOperation = criteria.getOperation();
         switch (criteriaOperation) {
-            case KeyWordFilterProcess.OPERATION_MORE:
+            case KeyWordsSessionRequest.FILTER_OPERATION_MORE:
                 predicate = builder.greaterThanOrEqualTo(
                         root.<String>get(criteria.getFieldName()), criteria.getValue().toString()
                 );
                 break;
-            case KeyWordFilterProcess.OPERATION_LESS:
+            case KeyWordsSessionRequest.FILTER_OPERATION_LESS:
                 predicate = builder.lessThanOrEqualTo(
                         root.<String>get(criteria.getFieldName()), criteria.getValue().toString()
                 );
                 break;
-            case KeyWordFilterProcess.OPERATION_EQUALS:
+            case KeyWordsSessionRequest.FILTER_OPERATION_EQUALS:
                 if (root.get(criteria.getFieldName()).getJavaType() == String.class) {
                     predicate = builder.like(
                             root.get(criteria.getFieldName()), "%" + criteria.getValue() + "%");

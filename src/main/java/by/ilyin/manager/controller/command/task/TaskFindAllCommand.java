@@ -4,7 +4,7 @@ import by.ilyin.manager.controller.command.Command;
 import by.ilyin.manager.controller.command.SessionRequestContent;
 import by.ilyin.manager.entity.Task;
 import by.ilyin.manager.evidence.KeyWordsApp;
-import by.ilyin.manager.evidence.KeyWordsRequest;
+import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.exception.ManagerAppAuthException;
 import by.ilyin.manager.service.ProjectService;
 import by.ilyin.manager.service.TaskService;
@@ -42,9 +42,9 @@ public class TaskFindAllCommand implements Command {
                 } else {
                     page = taskService.findAllByProjectIdAndIsDeletedEquals(projectIdValue, Boolean.FALSE, pageable);
                 }
-                sessionRequestContent.getRequestAttributes().put(KeyWordsRequest.TASKS, page.getContent());
+                sessionRequestContent.getRequestAttributes().put(KeyWordsSessionRequest.TASKS, page.getContent());
                 sessionRequestContent.setSuccessfulResult(Boolean.TRUE);
-                sessionRequestContent.getRequestAttributes().put(KeyWordsRequest.PAGE_PAGE, page);
+                sessionRequestContent.getRequestAttributes().put(KeyWordsSessionRequest.PAGE_PAGE, page);
             }
         } catch (NumberFormatException e) {
             //todo log

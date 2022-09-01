@@ -4,7 +4,7 @@ import by.ilyin.manager.controller.command.Command;
 import by.ilyin.manager.controller.command.SessionRequestContent;
 import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.evidence.KeyWordsApp;
-import by.ilyin.manager.evidence.KeyWordsRequest;
+import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.exception.ManagerAppAuthException;
 import by.ilyin.manager.service.PreparatoryProjectService;
 import by.ilyin.manager.service.ProjectService;
@@ -47,7 +47,7 @@ public class ProjectFindByIdCommand implements Command {
             if (optionalProject.isPresent()) {
                 result = true;
                 Project currentProject = optionalProject.get();
-                sessionRequestContent.getRequestAttributes().put(KeyWordsRequest.PROJECT, currentProject);
+                sessionRequestContent.getRequestAttributes().put(KeyWordsSessionRequest.PROJECT, currentProject);
             }
         } catch (NumberFormatException e) {
             //todo log

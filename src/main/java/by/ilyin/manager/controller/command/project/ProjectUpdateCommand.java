@@ -4,7 +4,7 @@ import by.ilyin.manager.controller.command.Command;
 import by.ilyin.manager.controller.command.SessionRequestContent;
 import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.evidence.KeyWordsApp;
-import by.ilyin.manager.evidence.KeyWordsRequest;
+import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.exception.ManagerAppAuthException;
 import by.ilyin.manager.service.PreparatoryProjectService;
 import by.ilyin.manager.service.ProjectService;
@@ -29,7 +29,7 @@ public class ProjectUpdateCommand implements Command {
 
     @Override
     public void execute(SessionRequestContent sessionRequestContent) {
-        Project project = (Project) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PROJECT);
+        Project project = (Project) sessionRequestContent.getRequestAttributes().get(KeyWordsSessionRequest.PROJECT);
         long currentId = project.getId();
         boolean result = false;
         try {

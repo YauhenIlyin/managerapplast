@@ -1,8 +1,6 @@
 package by.ilyin.manager.repository.specification;
 
 import by.ilyin.manager.entity.BaseEntity;
-import by.ilyin.manager.entity.Project;
-import by.ilyin.manager.repository.specification.impl.ProjectFieldCriteriaTypesImpl;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
@@ -13,22 +11,22 @@ import java.util.stream.Collectors;
 
 @Component
 @Scope("prototype")
-public class ProjectSpecificationBuilder <T extends BaseEntity> {
+public class SpecificationBuilder<T extends BaseEntity> {
 
     private final List<SearchCriteria> params;
 
-    public ProjectSpecificationBuilder() {
+    public SpecificationBuilder() {
         params = new ArrayList<>();
     }
 
-    public ProjectSpecificationBuilder with(String fieldName, String operation, Object value) {
+    public SpecificationBuilder with(String fieldName, String operation, Object value) {
         if (fieldName != null && operation != null && value != null) {
             params.add(new SearchCriteria(fieldName, operation, value));
         }
         return this;
     }
 
-    public ProjectSpecificationBuilder with(SearchCriteria searchCriteria) {
+    public SpecificationBuilder with(SearchCriteria searchCriteria) {
         if (searchCriteria != null) {
             params.add(searchCriteria);
         }

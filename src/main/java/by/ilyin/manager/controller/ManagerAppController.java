@@ -8,7 +8,7 @@ import by.ilyin.manager.controller.command.task.TaskCreateCommand;
 import by.ilyin.manager.controller.command.task.TaskFindAllCommand;
 import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.evidence.CommandName;
-import by.ilyin.manager.evidence.KeyWordsRequest;
+import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.util.AppBaseDataCore;
 import by.ilyin.manager.util.validator.ProjectEntityValidator;
 import by.ilyin.manager.util.validator.impl.ProjectRequestValidator;
@@ -69,34 +69,36 @@ public class ManagerAppController {
         this.taskCreateCommand = taskCreateCommand;
         this.commandFactory = commandFactory;
     }
-/*
-    @GetMapping("w")
-    public String _projectsPage(Model model, HttpServletRequest request) {
-        sessionRequestContent.initialize(request);
-        sessionRequestContent.initializePage(request, projectRequestValidator);
-        Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_FIND_ALL);
-        command.execute(sessionRequestContent);
-        List<Project> projects;
-        projects = (List) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PROJECTS);
-        Page page = (Page) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PAGE_PAGE);
-        basicInitializeProjectModel(model);
-        model.addAttribute(KeyWordsRequest.PROJECTS, projects);
-        model.addAttribute(KeyWordsRequest.PAGE_PAGE, page);
-        return "projects";
-    }
-*/
+
+    /*
+        @GetMapping("w")
+        public String _projectsPage(Model model, HttpServletRequest request) {
+            sessionRequestContent.initialize(request);
+            sessionRequestContent.initializePage(request, projectRequestValidator);
+            Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_FIND_ALL);
+            command.execute(sessionRequestContent);
+            List<Project> projects;
+            projects = (List) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PROJECTS);
+            Page page = (Page) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PAGE_PAGE);
+            basicInitializeProjectModel(model);
+            model.addAttribute(KeyWordsRequest.PROJECTS, projects);
+            model.addAttribute(KeyWordsRequest.PAGE_PAGE, page);
+            return "projects";
+        }
+    */
     @GetMapping("")
-    public String projectsPage(Model model, HttpServletRequest request) {
+    public ModelAndView projectsPage(ModelAndView model, HttpServletRequest request) {
         sessionRequestContent.initialize(request);
+        sessionRequestContent.setModelAndViewResult(model);
         Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_FIND_ALL);
         command.execute(sessionRequestContent);
-        List<Project> projects;
-        projects = (List) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PROJECTS);
-        Page page = (Page) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PAGE_PAGE);
-        basicInitializeProjectModel(model);
-        model.addAttribute(KeyWordsRequest.PROJECTS, projects);
-        model.addAttribute(KeyWordsRequest.PAGE_PAGE, page);
-        return "projects";
+//        List<Project> projects;
+//        projects = (List) sessionRequestContent.getRequestAttributes().get(KeyWordsSessionRequest.PROJECTS);
+//        Page page = (Page) sessionRequestContent.getRequestAttributes().get(KeyWordsSessionRequest.PAGE_PAGE);
+//        basicInitializeProjectModel(model);
+//        model.addAttribute(KeyWordsSessionRequest.PROJECTS, projects);
+//        model.addAttribute(KeyWordsSessionRequest.PAGE_PAGE, page);
+//        return "projects";
     }
 /*
     @GetMapping("/new")

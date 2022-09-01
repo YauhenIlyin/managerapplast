@@ -4,7 +4,7 @@ import by.ilyin.manager.controller.command.Command;
 import by.ilyin.manager.controller.command.SessionRequestContent;
 import by.ilyin.manager.entity.Task;
 import by.ilyin.manager.entity.User;
-import by.ilyin.manager.evidence.KeyWordsRequest;
+import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.exception.ManagerAppAuthException;
 import by.ilyin.manager.service.CustomUserService;
 import by.ilyin.manager.service.TaskService;
@@ -28,7 +28,7 @@ public class TaskCreateCommand implements Command {
     @Override
     public void execute(SessionRequestContent sessionRequestContent) {
         System.out.println("task create command");
-        Task task = (Task) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.TASK);
+        Task task = (Task) sessionRequestContent.getRequestAttributes().get(KeyWordsSessionRequest.TASK);
         long creatorId = 0;
         try {
             creatorId = sessionRequestContent.getAuthDataManager().getCurrentUserId();

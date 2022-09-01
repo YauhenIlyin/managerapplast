@@ -1,13 +1,12 @@
 package by.ilyin.manager.service;
 
 import by.ilyin.manager.controller.command.SessionRequestContent;
+import by.ilyin.manager.exception.ManagerAppAuthException;
 
 public interface PreparatoryProjectService {
 
-    void buildFindAllCriteriaSpecification(SessionRequestContent sessionRequestContent);
+    void buildFindAllCriteriaSpecification(SessionRequestContent sessionRequestContent) throws ManagerAppAuthException
 
-    void buildSoftDeleteCriteriaSpecification(SessionRequestContent sessionRequestContent);
-
-    void buildFindByIdCriteriaSpecification(SessionRequestContent sessionRequestContent, Long id);
+    void buildPageable(SessionRequestContent sessionRequestContent);
 
 }

@@ -1,14 +1,9 @@
 package by.ilyin.manager.controller.command;
 
-import by.ilyin.manager.evidence.KeyWordsApp;
-import by.ilyin.manager.evidence.KeyWordsRequest;
-import by.ilyin.manager.exception.ManagerAppAuthException;
-import by.ilyin.manager.repository.specification.ProjectSpecificationBuilder;
+import by.ilyin.manager.repository.specification.SpecificationBuilder;
 import by.ilyin.manager.security.AuthDataManager;
-import by.ilyin.manager.util.AppBaseDataCore;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
@@ -26,7 +21,7 @@ public class SessionRequestContent {
     private HashMap<String, Object> requestAttributes;
     private final AuthDataManager authDataManager;
     private Pageable pageable = null;
-    private ProjectSpecificationBuilder projectSpecificationBuilder = null;
+    private SpecificationBuilder specificationBuilder = null;
     private boolean isSuccessfulResult = false;
     private ModelAndView modelAndViewResult;
 
@@ -64,12 +59,12 @@ public class SessionRequestContent {
         this.pageable = pageable;
     }
 
-    public ProjectSpecificationBuilder getProjectSpecificationBuilder() {
-        return projectSpecificationBuilder;
+    public SpecificationBuilder getSpecificationBuilder() {
+        return specificationBuilder;
     }
 
-    public void setProjectSpecificationBuilder(ProjectSpecificationBuilder projectSpecificationBuilder) {
-        this.projectSpecificationBuilder = projectSpecificationBuilder;
+    public void setSpecificationBuilder(SpecificationBuilder specificationBuilder) {
+        this.specificationBuilder = specificationBuilder;
     }
 
     public boolean isSuccessfulResult() {
@@ -122,11 +117,11 @@ public class SessionRequestContent {
     private boolean isSuccessfulResult = false;
     private boolean isFiltering = false;
     private String currentRole;
-    private ProjectSpecificationBuilder projectSpecificationBuilder;
+    private SpecificationBuilder projectSpecificationBuilder;
 
     @Autowired
     public SessionRequestContent(AppBaseDataCore appBaseDataCore, AuthDataManager authDataManager,
-                                  ProjectSpecificationBuilder projectSpecificationBuilder) {
+                                  SpecificationBuilder projectSpecificationBuilder) {
         this.appBaseDataCore = appBaseDataCore;
         this.authDataManager = authDataManager;
         this.projectSpecificationBuilder = projectSpecificationBuilder;
@@ -191,11 +186,11 @@ public class SessionRequestContent {
         this.currentRole = currentRole;
     }
 
-    public ProjectSpecificationBuilder getProjectSpecificationBuilder() {
+    public SpecificationBuilder getProjectSpecificationBuilder() {
         return projectSpecificationBuilder;
     }
 
-    public void setProjectSpecificationBuilder(ProjectSpecificationBuilder projectSpecificationBuilder) {
+    public void setProjectSpecificationBuilder(SpecificationBuilder projectSpecificationBuilder) {
         this.projectSpecificationBuilder = projectSpecificationBuilder;
     }
 

@@ -1,6 +1,21 @@
 package by.ilyin.manager.evidence;
 
-public class KeyWordsRequest {
+public class KeyWordsSessionRequest {
+
+    public static final String DEFAULT_EMPTY_VALUE = "none";
+
+    public static final String FILTER_OPERATION_MORE = "more";
+    public static final String FILTER_OPERATION_LESS = "less";
+    public static final String FILTER_OPERATION_EQUALS = "equal";
+    public static final String FILTER_OPERATION_NUMBER_EQUALS = "num_equal";
+
+    public static final String FILTER_PROJECT_PROG_LANG_FILTER_NAME = "programmingLanguage";
+    public static final String FILTER_PROJECT_APP_SERVER_FILTER_NAME = "applicationServer";
+    public static final String FILTER_PROJECT_DATABASE_FILTER_NAME = "database";
+    public static final String FILTER_PROJECT_EMPLOYEE_OPERATION_FILTER_NAME = "employeeOperation";
+    public static final String FILTER_PROJECT_EMPLOYEE_COUNT_FILTER_NAME = "employeeCount";
+
+    public static final String RESULT = "result";
 
     public static final String PROJECTS = "projects";
     public static final String PROJECT = "project";
@@ -22,7 +37,7 @@ public class KeyWordsRequest {
     public static final long PAGE_DEFAULT_COUNT_ITEMS_ON_ONE = 3;
     public static final long PAGE_DEFAULT_CURRENT_NUMBER = 0;
 
-    private KeyWordsRequest() {
+    private KeyWordsSessionRequest() {
     }
 
 }

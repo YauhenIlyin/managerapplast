@@ -4,7 +4,7 @@ import by.ilyin.manager.controller.command.Command;
 import by.ilyin.manager.controller.command.SessionRequestContent;
 import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.evidence.KeyWordsApp;
-import by.ilyin.manager.evidence.KeyWordsRequest;
+import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.exception.ManagerAppAuthException;
 import by.ilyin.manager.service.PreparatoryProjectService;
 import by.ilyin.manager.service.ProjectService;
@@ -30,7 +30,7 @@ public class ProjectDeleteCommand implements Command {
     @Override
     public void execute(SessionRequestContent sessionRequestContent) {
         boolean result = false;
-        Project currentProject = (Project) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PROJECT);
+        Project currentProject = (Project) sessionRequestContent.getRequestAttributes().get(KeyWordsSessionRequest.PROJECT);
         if (currentProject != null) {
             long currentId = currentProject.getId();
             try {
