@@ -2,66 +2,52 @@ package by.ilyin.manager.controller.command.project;
 
 import by.ilyin.manager.controller.command.Command;
 import by.ilyin.manager.controller.command.SessionRequestContent;
-import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.service.PreparatoryProjectService;
-import by.ilyin.manager.service.ProjectService;
+import by.ilyin.manager.util.AppBaseDataCore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
+import java.util.HashMap;
 
 @Component
-@Scope("prototype")
 public class ProjectFindAllCommand implements Command {
 
+
+    private static final String SUCCESSFUL_PATH = "/projects";
+    private static final String SUCCESSFUL_VIEW = "projects";
+    private static final String UNSUCCESSFUL_PATH = "/projects";
+    private static final String UNSUCCESSFUL_VIEW = "projects";
+
     private PreparatoryProjectService preparatoryProjectService;
-    private ProjectService projectService;
+    private final AppBaseDataCore appBaseDataCore;
 
     @Autowired
     public ProjectFindAllCommand(PreparatoryProjectService preparatoryProjectService,
-                                 ProjectService projectService) {
+                                 AppBaseDataCore appBaseDataCore) {
         this.preparatoryProjectService = preparatoryProjectService;
-        this.projectService = projectService;
+        this.appBaseDataCore = appBaseDataCore;
     }
 
     @Override
     public void execute(SessionRequestContent sessionRequestContent) {
-        preparatoryProjectService.buildFindAllCriteriaSpecification(sessionRequestContent);
-        preparatoryProjectService.buildSoftDeleteCriteriaSpecification(sessionRequestContent);
-        List<Project> projects;
-        Specification<Project> spec = sessionRequestContent.getSpecificationBuilder().build();
-        Pageable pageable = sessionRequestContent.getPageable();
-        Page page = projectService.findAll(spec, pageable);
-        projects = page.getContent();
-        sessionRequestContent.getRequestAttributes().put(KeyWordsSessionRequest.PROJECTS, projects);
-        sessionRequestContent.getRequestAttributes().put(KeyWordsSessionRequest.PAGE_PAGE, page);
+        preparatoryProjectService.findAllProjects(sessionRequestContent);
+        ModelAndView modelAndView = new ModelAndView(SUCCESSFUL_PATH);
+        modelAndView.setViewName(SUCCESSFUL_VIEW);
+        HashMap requestAttributes = sessionRequestContent.getRequestAttributes();
+        Object projects = requestAttributes.get(KeyWordsSessionRequest.PROJECTS);
+        Object page = requestAttributes.get(KeyWordsSessionRequest.PAGE_PAGE);
+        modelAndView.addObject(KeyWordsSessionRequest.PROJECTS, projects);
+        modelAndView.addObject(KeyWordsSessionRequest.PAGE_PAGE, page);
+        basicInitializeProjectModel(modelAndView);
+        sessionRequestContent.setModelAndViewResult(modelAndView);
     }
-    /*
-    @Override
-    public void execute(SessionRequestContent sessionRequestContent) {
-        preparatoryProjectService.buildFindAllCriteriaSpecification(sessionRequestContent);
-        preparatoryProjectService.buildSoftDeleteCriteriaSpecification(sessionRequestContent);
-        List<Project> projects;
-        Specification<Project> spec = sessionRequestContent.getProjectSpecificationBuilder().build();
-        Pageable pageable = sessionRequestContent.getPageable();
-        Page page = projectService.findAll(spec, pageable);
-        projects = page.getContent();
-        sessionRequestContent.getRequestAttributes().put(KeyWordsSessionRequest.PROJECTS, projects);
-        sessionRequestContent.getRequestAttributes().put(KeyWordsSessionRequest.PAGE_PAGE, page);
+
+    private void basicInitializeProjectModel(ModelAndView model) {
+        model.addObject("progLangs", appBaseDataCore.getProgrammingLanguageList());
+        model.addObject("appServers", appBaseDataCore.getApplicationServerList());
+        model.addObject("databases", appBaseDataCore.getDatabaseList());
     }
-     */
-
-//    List<Project> projects;
-//    projects = (List) sessionRequestContent.getRequestAttributes().get(KeyWordsSessionRequest.PROJECTS);
-//    Page page = (Page) sessionRequestContent.getRequestAttributes().get(KeyWordsSessionRequest.PAGE_PAGE);
-//    basicInitializeProjectModel(model);
-//        model.addAttribute(KeyWordsSessionRequest.PROJECTS, projects);
-//        model.addAttribute(KeyWordsSessionRequest.PAGE_PAGE, page);
-//        return "projects";
-
 }

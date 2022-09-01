@@ -5,7 +5,9 @@ import by.ilyin.manager.exception.ManagerAppAuthException;
 
 public interface PreparatoryProjectService {
 
-    void buildFindAllCriteriaSpecification(SessionRequestContent sessionRequestContent) throws ManagerAppAuthException
+    void findAllProjects(SessionRequestContent sessionRequestContent);
+
+    void buildFindAllCriteriaSpecification(SessionRequestContent sessionRequestContent);
 
     void buildPageable(SessionRequestContent sessionRequestContent);
 

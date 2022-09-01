@@ -42,6 +42,11 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.findAll(specification, pageable);
     }
 
+    @Override
+    public Page<Project> findAll(Pageable pageable) {
+        return projectRepository.findAll(pageable);
+    }
+
 
     @Override
     public Optional<Project> findById(long id) {

@@ -16,6 +16,8 @@ public interface ProjectService {
 
     Page<Project> findAll(Specification<Project> specification, Pageable pageable);
 
+    Page<Project> findAll(Pageable pageable);
+
     Optional<Project> findById(long id);
 
     Optional<Project> findById(Specification specification); //todo no solution found
@@ -29,5 +31,5 @@ public interface ProjectService {
     boolean softDelete(Project project);
 
     boolean existsById(Long id);
-    
+
 }

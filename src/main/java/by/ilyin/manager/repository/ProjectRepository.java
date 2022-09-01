@@ -18,6 +18,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
 
     Page findAll(Specification specification, Pageable pageable);
 
+    Page findAll(Pageable pageable);
+
     Optional<Project> findByIdAndIsDeletedEquals(long id, boolean isDeleted);
 
     Optional<Project> findById(long id);

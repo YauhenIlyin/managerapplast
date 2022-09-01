@@ -10,7 +10,7 @@ public interface PageableFilterService {
 
     PageableFilterService initializePageable(SessionRequestContent sessionRequestContent, RequestValidator requestValidator);
 
-    PageableFilterService addSoftDeleteCriteriaSpecification(SpecificationBuilder builder, String currentUserRole)
+    PageableFilterService addSoftDeleteCriteriaSpecification(SpecificationBuilder builder, String currentUserRole);
 
     PageableFilterService addCriteria(SpecificationBuilder builder, boolean isCorrectConditions, String fieldName, String operation, Object value);
 

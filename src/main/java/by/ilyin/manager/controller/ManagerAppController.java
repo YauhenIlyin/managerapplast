@@ -3,26 +3,17 @@ package by.ilyin.manager.controller;
 import by.ilyin.manager.controller.command.Command;
 import by.ilyin.manager.controller.command.CommandFactory;
 import by.ilyin.manager.controller.command.SessionRequestContent;
-import by.ilyin.manager.controller.command.project.*;
-import by.ilyin.manager.controller.command.task.TaskCreateCommand;
-import by.ilyin.manager.controller.command.task.TaskFindAllCommand;
-import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.evidence.CommandName;
-import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.util.AppBaseDataCore;
 import by.ilyin.manager.util.validator.ProjectEntityValidator;
 import by.ilyin.manager.util.validator.impl.ProjectRequestValidator;
 import by.ilyin.manager.util.validator.impl.TaskEntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-
 @Controller
 @RequestMapping("/projects")
 public class ManagerAppController {
@@ -32,13 +23,6 @@ public class ManagerAppController {
     private ProjectRequestValidator projectRequestValidator;
     private ProjectEntityValidator projectEntityValidator;
     private TaskEntityValidator taskEntityValidator;
-    private ProjectFindAllCommand projectFindAllCommand;
-    private ProjectCreateCommand projectCreateCommand;
-    private ProjectFindByIdCommand projectFindByIdCommand;
-    private ProjectUpdateCommand projectUpdateCommand;
-    private ProjectDeleteCommand projectDeleteCommand;
-    private TaskFindAllCommand taskFindAllCommand;
-    private TaskCreateCommand taskCreateCommand;
     private CommandFactory commandFactory;
 
     @Autowired
@@ -47,59 +31,25 @@ public class ManagerAppController {
                                 ProjectRequestValidator projectRequestValidator,
                                 ProjectEntityValidator projectEntityValidator,
                                 TaskEntityValidator taskEntityValidator,
-                                ProjectFindAllCommand projectFindAllCommand,
-                                ProjectCreateCommand projectCreateCommand,
-                                ProjectFindByIdCommand projectFindByIdCommand,
-                                ProjectUpdateCommand projectUpdateCommand,
-                                ProjectDeleteCommand projectDeleteCommand,
-                                TaskFindAllCommand taskFindAllCommand,
-                                TaskCreateCommand taskCreateCommand,
                                 CommandFactory commandFactory) {
         this.appBaseDataCore = appBaseDataCore;
         this.sessionRequestContent = sessionRequestContent;
         this.projectRequestValidator = projectRequestValidator;
         this.projectEntityValidator = projectEntityValidator;
         this.taskEntityValidator = taskEntityValidator;
-        this.projectFindAllCommand = projectFindAllCommand;
-        this.projectCreateCommand = projectCreateCommand;
-        this.projectFindByIdCommand = projectFindByIdCommand;
-        this.projectUpdateCommand = projectUpdateCommand;
-        this.projectDeleteCommand = projectDeleteCommand;
-        this.taskFindAllCommand = taskFindAllCommand;
-        this.taskCreateCommand = taskCreateCommand;
         this.commandFactory = commandFactory;
     }
 
-    /*
-        @GetMapping("w")
-        public String _projectsPage(Model model, HttpServletRequest request) {
-            sessionRequestContent.initialize(request);
-            sessionRequestContent.initializePage(request, projectRequestValidator);
-            Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_FIND_ALL);
-            command.execute(sessionRequestContent);
-            List<Project> projects;
-            projects = (List) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PROJECTS);
-            Page page = (Page) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PAGE_PAGE);
-            basicInitializeProjectModel(model);
-            model.addAttribute(KeyWordsRequest.PROJECTS, projects);
-            model.addAttribute(KeyWordsRequest.PAGE_PAGE, page);
-            return "projects";
-        }
-    */
     @GetMapping("")
     public ModelAndView projectsPage(ModelAndView model, HttpServletRequest request) {
         sessionRequestContent.initialize(request);
         sessionRequestContent.setModelAndViewResult(model);
         Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_FIND_ALL);
         command.execute(sessionRequestContent);
-//        List<Project> projects;
-//        projects = (List) sessionRequestContent.getRequestAttributes().get(KeyWordsSessionRequest.PROJECTS);
-//        Page page = (Page) sessionRequestContent.getRequestAttributes().get(KeyWordsSessionRequest.PAGE_PAGE);
-//        basicInitializeProjectModel(model);
-//        model.addAttribute(KeyWordsSessionRequest.PROJECTS, projects);
-//        model.addAttribute(KeyWordsSessionRequest.PAGE_PAGE, page);
-//        return "projects";
+        model = sessionRequestContent.getModelAndViewResult();
+        return model;
     }
+
 /*
     @GetMapping("/new")
     public String projectCreationPage(@ModelAttribute("project") Project project,
@@ -279,17 +229,5 @@ public class ManagerAppController {
         return mav;
     }
 */
-
-    private void basicInitializeProjectModel(ModelAndView model) {
-        model.getModel().put("progLangs", appBaseDataCore.getProgrammingLanguageList());
-        model.getModel().put("appServers", appBaseDataCore.getProgrammingLanguageList());
-        model.getModel().put("databases", appBaseDataCore.getProgrammingLanguageList());
-    }
-
-    private void basicInitializeProjectModel(Model model) {
-        model.addAttribute("progLangs", appBaseDataCore.getProgrammingLanguageList());
-        model.addAttribute("appServers", appBaseDataCore.getApplicationServerList());
-        model.addAttribute("databases", appBaseDataCore.getDatabaseList());
-    }
 
 }
