@@ -7,6 +7,8 @@ public interface PreparatoryProjectService {
 
     void findAllProjects(SessionRequestContent sessionRequestContent);
 
+    void createProject(SessionRequestContent sessionRequestContent);
+
     void buildFindAllCriteriaSpecification(SessionRequestContent sessionRequestContent);
 
     void buildPageable(SessionRequestContent sessionRequestContent);

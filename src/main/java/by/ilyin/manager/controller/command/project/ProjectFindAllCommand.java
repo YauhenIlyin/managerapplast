@@ -4,9 +4,9 @@ import by.ilyin.manager.controller.command.Command;
 import by.ilyin.manager.controller.command.SessionRequestContent;
 import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.service.PreparatoryProjectService;
-import by.ilyin.manager.util.AppBaseDataCore;
+import by.ilyin.manager.util.ModelViewDataBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -22,13 +22,13 @@ public class ProjectFindAllCommand implements Command {
     private static final String UNSUCCESSFUL_VIEW = "projects";
 
     private PreparatoryProjectService preparatoryProjectService;
-    private final AppBaseDataCore appBaseDataCore;
+    private ModelViewDataBuilder modelViewDataBuilder;
 
     @Autowired
     public ProjectFindAllCommand(PreparatoryProjectService preparatoryProjectService,
-                                 AppBaseDataCore appBaseDataCore) {
+                                 @Qualifier("projectModelViewDataBuilderImpl") ModelViewDataBuilder modelViewDataBuilder) {
         this.preparatoryProjectService = preparatoryProjectService;
-        this.appBaseDataCore = appBaseDataCore;
+        this.modelViewDataBuilder = modelViewDataBuilder;
     }
 
     @Override
@@ -46,8 +46,9 @@ public class ProjectFindAllCommand implements Command {
     }
 
     private void basicInitializeProjectModel(ModelAndView model) {
-        model.addObject("progLangs", appBaseDataCore.getProgrammingLanguageList());
-        model.addObject("appServers", appBaseDataCore.getApplicationServerList());
-        model.addObject("databases", appBaseDataCore.getDatabaseList());
+        modelViewDataBuilder
+                .addProgLangs(model)
+                .addAppServers(model)
+                .addDatabases(model);
     }
 }

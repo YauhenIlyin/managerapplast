@@ -14,10 +14,12 @@ import by.ilyin.manager.util.validator.impl.TaskEntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/projects")
@@ -29,7 +31,7 @@ public class ManagerAppController {
     private ProjectEntityValidator projectEntityValidator;
     private TaskEntityValidator taskEntityValidator;
     private CommandFactory commandFactory;
-    private ModelViewDataBuilder projectModelViewInitializer;
+    private ModelViewDataBuilder projectModelViewBuilder;
 
     @Autowired
     public ManagerAppController(AppBaseDataCore appBaseDataCore,
@@ -38,14 +40,14 @@ public class ManagerAppController {
                                 ProjectEntityValidator projectEntityValidator,
                                 TaskEntityValidator taskEntityValidator,
                                 CommandFactory commandFactory,
-                                @Qualifier("projectModelViewDataBuilderImpl") ModelViewDataBuilder projectModelViewInitializer) {
+                                @Qualifier("projectModelViewDataBuilderImpl") ModelViewDataBuilder projectModelViewBuilder) {
         this.appBaseDataCore = appBaseDataCore;
         this.sessionRequestContent = sessionRequestContent;
         this.projectRequestValidator = projectRequestValidator;
         this.projectEntityValidator = projectEntityValidator;
         this.taskEntityValidator = taskEntityValidator;
         this.commandFactory = commandFactory;
-        this.projectModelViewInitializer = projectModelViewInitializer;
+        this.projectModelViewBuilder = projectModelViewBuilder;
     }
 
     @GetMapping("")
@@ -61,18 +63,29 @@ public class ManagerAppController {
     @GetMapping("/new")
     public ModelAndView projectCreationPage(@ModelAttribute("project") Project project,
                                             ModelAndView model) {
-        model.addObject(KeyWordsSessionRequest.DATABASES, appBaseDataCore.getDatabaseList());
-        model.addObject(KeyWordsSessionRequest.APP_SERVERS, appBaseDataCore.getApplicationServerList());
-        model.
-
-
-                basicInitializeProjectModel(model);
-        return "project_creation";
+        projectModelViewBuilder
+                .addAppServers(model)
+                .addDatabases(model)
+                .addProgLangs(model);
+        model.setViewName("project_creation");
+        return model;
     }
 
+    @PostMapping("")
+    public ModelAndView createProject(ModelAndView model,
+                                      @ModelAttribute("project") @Valid Project project,
+                                      BindingResult bindingResult) {
+        sessionRequestContent.setBindingResult(bindingResult);
+        sessionRequestContent.getRequestAttributes().put(KeyWordsSessionRequest.PROJECT, project);
+        sessionRequestContent.setModelAndViewResult(model);
+        Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_CREATE);
+        command.execute(sessionRequestContent);
+        model = sessionRequestContent.getModelAndViewResult();
+        return model;
+    }
+
+
     /*
-
-
     @PostMapping("")
     public ModelAndView createProject(Model model,
                                       @ModelAttribute("project") @Valid Project project,
@@ -81,7 +94,7 @@ public class ManagerAppController {
         ModelAndView mav;
         if (bindingResult.hasErrors()) {
             mav = new ModelAndView("projects/new");
-//            basicInitializeProjectModel(mav);
+            basicInitializeProjectModel(mav);
             mav.addObject("project", project);
             mav.setViewName("project_creation");
         } else {

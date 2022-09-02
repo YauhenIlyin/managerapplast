@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -24,6 +25,7 @@ public class SessionRequestContent {
     private SpecificationBuilder specificationBuilder = null;
     private boolean isSuccessfulResult = false;
     private ModelAndView modelAndViewResult;
+    private BindingResult bindingResult;
 
     public SessionRequestContent(AuthDataManager authDataManager) {
         this.authDataManager = authDataManager;
@@ -81,6 +83,14 @@ public class SessionRequestContent {
 
     public void setModelAndViewResult(ModelAndView modelAndViewResult) {
         this.modelAndViewResult = modelAndViewResult;
+    }
+
+    public BindingResult getBindingResult() {
+        return bindingResult;
+    }
+
+    public void setBindingResult(BindingResult bindingResult) {
+        this.bindingResult = bindingResult;
     }
 
     public void initialize(HttpServletRequest request) {

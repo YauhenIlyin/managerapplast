@@ -39,19 +39,19 @@
     <hr/>
     <select th:object="${project}" th:field="*{programmingLanguage}" id="projectProgLang">
         <option th:value="null">Please select...</option>
-        <option th:each="progLang, iter : ${progLangs}" th:value="${iter.index}" th:text="${progLang.getLanguageName()}"></option>
+        <option th:each="progLang, iter : ${progLangs}" th:value="${iter.index} + 1" th:text="${progLang.getLanguageName()}"></option>
     </select>
 
     <hr/>
     <select th:object="${project}" th:field="*{applicationServer}" id="projectAppServer">
         <option th:value="null">Please select...</option>
-        <option th:each="appServer, iter : ${appServers}" th:value="${iter.index}" th:text="${appServer.getServerName()}"></option>
+        <option th:each="appServer, iter : ${appServers}" th:value="${iter.index} + 1" th:text="${appServer.getServerName()}"></option>
     </select>
 
     <hr/>
     <select th:object="${project}" th:field="*{database}" id="projectDatabase">
         <option th:value="null">Please select...</option>
-        <option th:each="database, iter : ${databases}" th:value="${iter.index}" th:text="${database.getDatabaseName()}"></option>
+        <option th:each="database, iter : ${databases}" th:value="${iter.index} +1" th:text="${database.getDatabaseName()}"></option>
     </select>
     <input type="submit" value="Create project"/>
 </form>

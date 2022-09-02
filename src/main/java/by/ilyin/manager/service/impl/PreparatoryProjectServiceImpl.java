@@ -2,12 +2,13 @@ package by.ilyin.manager.service.impl;
 
 import by.ilyin.manager.controller.command.SessionRequestContent;
 import by.ilyin.manager.entity.Project;
+import by.ilyin.manager.entity.User;
 import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.evidence.KeyWordsApp;
 import by.ilyin.manager.exception.ManagerAppAuthException;
 import by.ilyin.manager.repository.specification.FieldCriteriaTypes;
 import by.ilyin.manager.repository.specification.SpecificationBuilder;
-import by.ilyin.manager.repository.specification.SearchCriteria;
+import by.ilyin.manager.service.CustomUserService;
 import by.ilyin.manager.service.PageableFilterService;
 import by.ilyin.manager.service.PreparatoryProjectService;
 import by.ilyin.manager.service.ProjectService;
@@ -16,7 +17,6 @@ import by.ilyin.manager.util.validator.BaseValidator;
 import by.ilyin.manager.util.validator.impl.ProjectRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PreparatoryProjectServiceImpl implements PreparatoryProjectService {
@@ -34,6 +35,7 @@ public class PreparatoryProjectServiceImpl implements PreparatoryProjectService 
     private final ProjectRequestValidator projectRequestValidator;
     private final FieldCriteriaTypes fieldCriteriaTypes;
     private final ProjectService projectService;
+    private final CustomUserService customUserService;
 
     @Autowired
     public PreparatoryProjectServiceImpl(AppBaseDataCore appBaseDataCore,
@@ -41,13 +43,34 @@ public class PreparatoryProjectServiceImpl implements PreparatoryProjectService 
                                          BaseValidator baseValidator,
                                          ProjectRequestValidator projectRequestValidator,
                                          ProjectService projectService,
+                                         CustomUserService customUserService,
                                          @Qualifier("projectFieldCriteriaTypesImpl") FieldCriteriaTypes fieldCriteriaTypes) {
         this.appBaseDataCore = appBaseDataCore;
         this.pageableFilterService = pageableFilterService;
         this.baseValidator = baseValidator;
         this.projectRequestValidator = projectRequestValidator;
         this.projectService = projectService;
+        this.customUserService = customUserService;
         this.fieldCriteriaTypes = fieldCriteriaTypes;
+    }
+
+    @Override
+    public void createProject(SessionRequestContent sessionRequestContent) {
+        HashMap params = sessionRequestContent.getRequestAttributes();
+        Project project = (Project) params.get(KeyWordsSessionRequest.PROJECT);
+        long userId = 0;
+        try {
+            userId = sessionRequestContent.getAuthDataManager().getCurrentUserId();
+        } catch (ManagerAppAuthException e) {
+            //todo log
+        }
+        Optional<User> user = customUserService.findById(userId);
+        if (user.isEmpty()) {
+            //todo log
+        }
+        project.setCreator(user.get());
+        projectService.save(project);
+        sessionRequestContent.setSuccessfulResult(Boolean.TRUE);
     }
 
 
