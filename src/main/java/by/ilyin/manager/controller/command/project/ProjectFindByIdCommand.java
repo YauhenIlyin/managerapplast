@@ -2,21 +2,23 @@ package by.ilyin.manager.controller.command.project;
 
 import by.ilyin.manager.controller.command.Command;
 import by.ilyin.manager.controller.command.SessionRequestContent;
-import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.evidence.KeyWordsApp;
 import by.ilyin.manager.evidence.KeyWordsSessionRequest;
-import by.ilyin.manager.exception.ManagerAppAuthException;
 import by.ilyin.manager.service.PreparatoryProjectService;
 import by.ilyin.manager.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Optional;
+import java.util.HashMap;
 
 @Component
-@Scope("prototype")
 public class ProjectFindByIdCommand implements Command {
+
+    private static final String SUCCESSFUL_PATH = "projects/";
+    private static final String SUCCESSFUL_VIEW = "project_by_id";
+    private static final String UNSUCCESSFUL_PATH = "redirect:/projects";
+    private static final String UNSUCCESSFUL_VIEW = null;
 
     private ProjectService projectService;
     private PreparatoryProjectService preparatoryProjectService;
@@ -27,33 +29,23 @@ public class ProjectFindByIdCommand implements Command {
         this.preparatoryProjectService = preparatoryProjectService;
     }
 
+
     @Override
     public void execute(SessionRequestContent sessionRequestContent) {
-        String currentId = sessionRequestContent.getRequestParameters().get(KeyWordsApp.PROJECT_ID_FIELD_NAME);
-        boolean result = false;
-        try {
-            Long currentIdValue = Long.parseLong(currentId);
-//            preparatoryProjectService.buildFindByIdCriteriaSpecification(sessionRequestContent, currentIdValue);
-//            preparatoryProjectService.buildSoftDeleteCriteriaSpecification(sessionRequestContent);
-//            Specification spec = sessionRequestContent.getProjectSpecificationBuilder().build();
-//            Optional<Project> project = projectService.findById(spec);
-            String currentRole = sessionRequestContent.getAuthDataManager().getCurrentUserRole();
-            Optional<Project> optionalProject = null;
-            if (currentRole.equals(KeyWordsApp.ROLE_ADMIN_VALUE)) {
-                optionalProject = projectService.findById(currentIdValue);
-            } else {
-                optionalProject = projectService.findByIdAndIsDeletedEquals(currentIdValue, Boolean.FALSE);
-            }
-            if (optionalProject.isPresent()) {
-                result = true;
-                Project currentProject = optionalProject.get();
-                sessionRequestContent.getRequestAttributes().put(KeyWordsSessionRequest.PROJECT, currentProject);
-            }
-        } catch (NumberFormatException e) {
-            //todo log
-        } catch (ManagerAppAuthException e) {
-            //todo log
+        preparatoryProjectService.findProjectById(sessionRequestContent);
+        ModelAndView model;
+        if (sessionRequestContent.isSuccessfulResult()) {
+            HashMap attributes = sessionRequestContent.getRequestAttributes();
+            HashMap params = sessionRequestContent.getRequestParameters();
+            String projectId = (String) params.get(KeyWordsApp.PROJECT_ID_FIELD_NAME);
+            Object project = attributes.get(KeyWordsSessionRequest.PROJECT);
+            model = new ModelAndView(SUCCESSFUL_PATH + projectId);
+            model.setViewName(SUCCESSFUL_VIEW);
+            model.addObject(KeyWordsSessionRequest.PROJECT, project);
+        } else {
+            model = new ModelAndView(UNSUCCESSFUL_PATH);
         }
-        sessionRequestContent.setSuccessfulResult(result);
+        sessionRequestContent.setModelAndViewResult(model);
     }
+
 }

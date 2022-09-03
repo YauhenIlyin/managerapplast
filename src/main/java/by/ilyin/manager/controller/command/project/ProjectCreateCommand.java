@@ -19,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class ProjectCreateCommand implements Command {
 
     private static final String SUCCESSFUL_PATH = "redirect:/projects";
-    private static final String SUCCESSFUL_VIEW = "projects";
+    private static final String SUCCESSFUL_VIEW = null;
     private static final String UNSUCCESSFUL_PATH = "projects/new";
     private static final String UNSUCCESSFUL_VIEW = "project_creation";
 

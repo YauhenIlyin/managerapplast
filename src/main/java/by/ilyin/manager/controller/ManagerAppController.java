@@ -5,6 +5,7 @@ import by.ilyin.manager.controller.command.CommandFactory;
 import by.ilyin.manager.controller.command.SessionRequestContent;
 import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.evidence.CommandName;
+import by.ilyin.manager.evidence.KeyWordsApp;
 import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.util.AppBaseDataCore;
 import by.ilyin.manager.util.ModelViewDataBuilder;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.HashMap;
 
 @Controller
 @RequestMapping("/projects")
@@ -84,31 +86,20 @@ public class ManagerAppController {
         return model;
     }
 
-
-    /*
-    @PostMapping("")
-    public ModelAndView createProject(Model model,
-                                      @ModelAttribute("project") @Valid Project project,
-                                      BindingResult bindingResult) {
-        basicInitializeProjectModel(model);
-        ModelAndView mav;
-        if (bindingResult.hasErrors()) {
-            mav = new ModelAndView("projects/new");
-            basicInitializeProjectModel(mav);
-            mav.addObject("project", project);
-            mav.setViewName("project_creation");
-        } else {
-            System.out.println(2);
-            HashMap<String, Object> attributes = new HashMap<>();
-            attributes.put(KeyWordsRequest.PROJECT, project);
-            sessionRequestContent.setRequestAttributes(attributes);
-            projectCreateCommand.execute(sessionRequestContent);
-            mav = new ModelAndView("redirect:/projects");
-        }
-        basicInitializeProjectModel(mav);
-        return mav;
+    @GetMapping("/{id}")
+    public ModelAndView show(@PathVariable("id") int id,
+                             @ModelAttribute("project") Project project,
+                             ModelAndView model) {
+        HashMap params = sessionRequestContent.getRequestParameters();
+        params.put(KeyWordsApp.PROJECT_ID_FIELD_NAME, "" + id);
+        params.put(KeyWordsSessionRequest.PROJECT, project);
+        Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_FIND_BY_ID);
+        command.execute(sessionRequestContent);
+        return sessionRequestContent.getModelAndViewResult();
     }
 
+
+    /*
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id,
                        @ModelAttribute("project") Project project,

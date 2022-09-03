@@ -54,6 +54,38 @@ public class PreparatoryProjectServiceImpl implements PreparatoryProjectService 
         this.fieldCriteriaTypes = fieldCriteriaTypes;
     }
 
+    public void findProjectById(SessionRequestContent sessionRequestContent) {
+        HashMap params = sessionRequestContent.getRequestParameters();
+        HashMap attributes = sessionRequestContent.getRequestAttributes();
+        String currentId = (String) params.get(KeyWordsApp.PROJECT_ID_FIELD_NAME);
+        boolean isNumber;
+        String currentRole = null;
+        Project project;
+        try {
+            currentRole = sessionRequestContent.getAuthDataManager().getCurrentUserRole();
+        } catch (ManagerAppAuthException e) {
+            currentRole = KeyWordsApp.ROLE_USER_VALUE;
+            //todo log
+        }
+        isNumber = baseValidator.isValidStrAsIntegerNumber(currentId);
+        if (isNumber) {
+            Optional<Project> optionalProject;
+            long id = Long.parseLong(currentId);
+            if (currentRole != null && !currentRole.equals(KeyWordsApp.ROLE_ADMIN_VALUE)) {
+                optionalProject = projectService.findByIdAndIsDeletedEquals(id, Boolean.FALSE);
+            } else {
+                optionalProject = projectService.findById(id);
+            }
+            if (optionalProject.isPresent()) {
+                project = optionalProject.get();
+                attributes.put(KeyWordsSessionRequest.PROJECT, project);
+                sessionRequestContent.setSuccessfulResult(Boolean.TRUE);
+            } else {
+                sessionRequestContent.setSuccessfulResult(Boolean.FALSE);
+            }
+        }
+    }
+
     @Override
     public void createProject(SessionRequestContent sessionRequestContent) {
         HashMap params = sessionRequestContent.getRequestAttributes();
