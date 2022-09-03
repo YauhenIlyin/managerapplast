@@ -56,9 +56,35 @@ public class PreparatoryProjectServiceImpl implements PreparatoryProjectService 
 
     @Override
     public void updateProject(SessionRequestContent sessionRequestContent) {
-        Project project = (Project) sessionRequestContent.getRequestAttributes().get(KeyWordsSessionRequest.PROJECT);
-        long currentId = project.getId();
-        boolean result = false;
+        HashMap attributes = sessionRequestContent.getRequestAttributes();
+        String currentRole = getCurrentRole(sessionRequestContent);
+        String currentId = (String) attributes.get(KeyWordsApp.PROJECT_ID_FIELD_NAME);
+        boolean isNumber = baseValidator.isValidStrAsIntegerNumber(currentId);
+        Project project = (Project) attributes.get(KeyWordsSessionRequest.PROJECT);
+        if (isNumber) {
+            Optional<Project> optionalProject;
+            long id = Long.parseLong(currentId);
+            if (!currentRole.equals(KeyWordsApp.ROLE_ADMIN_VALUE)) {
+                optionalProject = projectService.findByIdAndIsDeletedEquals(id, Boolean.FALSE);
+            } else {
+                optionalProject = projectService.findById(id);
+            }
+            if (optionalProject.isPresent()) {
+                project.setId(id);
+                projectService.save(project);
+            }
+        } else {
+            sessionRequestContent.setSuccessfulResult(Boolean.FALSE);
+        }
+
+
+        Project currentProject = (Project) attributes.get(KeyWordsSessionRequest.PROJECT);
+        findProjectById(sessionRequestContent);
+        if (sessionRequestContent.isSuccessfulResult()) {
+            projectService.save(currentProject);
+            attributes.put(KeyWordsSessionRequest.PROJECT, currentProject);
+        }
+
     }
 
     @Override
@@ -67,14 +93,8 @@ public class PreparatoryProjectServiceImpl implements PreparatoryProjectService 
         HashMap attributes = sessionRequestContent.getRequestAttributes();
         String currentId = (String) params.get(KeyWordsApp.PROJECT_ID_FIELD_NAME);
         boolean isNumber;
-        String currentRole = null;
+        String currentRole = getCurrentRole(sessionRequestContent);
         Project project;
-        try {
-            currentRole = sessionRequestContent.getAuthDataManager().getCurrentUserRole();
-        } catch (ManagerAppAuthException e) {
-            currentRole = KeyWordsApp.ROLE_USER_VALUE;
-            //todo log
-        }
         isNumber = baseValidator.isValidStrAsIntegerNumber(currentId);
         if (isNumber) {
             Optional<Project> optionalProject;
@@ -147,13 +167,7 @@ public class PreparatoryProjectServiceImpl implements PreparatoryProjectService 
         boolean appServerCondition = appServerIndex != null && !appServerIndex.equals(KeyWordsSessionRequest.DEFAULT_EMPTY_VALUE);
         boolean databaseCondition = databaseIndex != null && !databaseIndex.equals(KeyWordsSessionRequest.DEFAULT_EMPTY_VALUE);
         boolean employeeCountCondition = baseValidator.isValidStrAsIntegerNumber(employeeCount);
-        String currentUserRole = null;
-        try {
-            currentUserRole = sessionRequestContent.getAuthDataManager().getCurrentUserRole();
-        } catch (ManagerAppAuthException e) {
-            //todo log
-            currentUserRole = KeyWordsApp.ROLE_USER_VALUE;
-        }
+        String currentUserRole = getCurrentRole(sessionRequestContent);
         pageableFilterService
                 .addCriteria(
                         builder,
@@ -192,4 +206,14 @@ public class PreparatoryProjectServiceImpl implements PreparatoryProjectService 
         pageableFilterService.initializePageable(sessionRequestContent, projectRequestValidator);
     }
 
+    private String getCurrentRole(SessionRequestContent sessionRequestContent) {
+        String currentRole;
+        try {
+            currentRole = sessionRequestContent.getAuthDataManager().getCurrentUserRole();
+        } catch (ManagerAppAuthException e) {
+            currentRole = KeyWordsApp.ROLE_USER_VALUE;
+            //todo log
+        }
+        return currentRole;
+    }
 }

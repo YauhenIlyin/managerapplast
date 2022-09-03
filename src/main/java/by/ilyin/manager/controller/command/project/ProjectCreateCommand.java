@@ -9,18 +9,14 @@ import by.ilyin.manager.service.PreparatoryProjectService;
 import by.ilyin.manager.service.ProjectService;
 import by.ilyin.manager.util.ModelViewDataBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 
 @Component
-@Scope("prototype")
 public class ProjectCreateCommand implements Command {
 
-    private static final String SUCCESSFUL_PATH = "redirect:/projects";
-    private static final String SUCCESSFUL_VIEW = null;
-    private static final String UNSUCCESSFUL_PATH = "projects/new";
+    private static final String SUCCESSFUL_VIEW = "redirect:/projects";
     private static final String UNSUCCESSFUL_VIEW = "project_creation";
 
     private PreparatoryProjectService preparatoryProjectService;
@@ -40,18 +36,12 @@ public class ProjectCreateCommand implements Command {
     public void execute(SessionRequestContent sessionRequestContent) {
         BindingResult bindingResult = sessionRequestContent.getBindingResult();
         ModelAndView model;
-        String resultPath;
-        String resultView;
         Project project = (Project) sessionRequestContent.getRequestAttributes().get(KeyWordsSessionRequest.PROJECT);
         if (bindingResult != null && bindingResult.hasErrors()) {
-            resultPath = UNSUCCESSFUL_PATH;
-            resultView = UNSUCCESSFUL_VIEW;
-            model = new ModelAndView(resultPath);
-            model.setViewName(resultView);
+            model = new ModelAndView(UNSUCCESSFUL_VIEW);
         } else {
             preparatoryProjectService.createProject(sessionRequestContent);
-            resultPath = SUCCESSFUL_PATH;
-            model = new ModelAndView(resultPath);
+            model = new ModelAndView(SUCCESSFUL_VIEW);
         }
         model.addObject(KeyWordsSessionRequest.PROJECT, project);
         basicInitializeProjectModel(model);

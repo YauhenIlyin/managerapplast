@@ -9,12 +9,13 @@ import by.ilyin.manager.evidence.KeyWordsApp;
 import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.util.AppBaseDataCore;
 import by.ilyin.manager.util.ModelViewDataBuilder;
-import by.ilyin.manager.util.validator.ProjectEntityValidator;
+import by.ilyin.manager.util.validator.EntityValidator;
 import by.ilyin.manager.util.validator.impl.ProjectRequestValidator;
 import by.ilyin.manager.util.validator.impl.TaskEntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,7 +31,7 @@ public class ManagerAppController {
     private AppBaseDataCore appBaseDataCore;
     private SessionRequestContent sessionRequestContent;
     private ProjectRequestValidator projectRequestValidator;
-    private ProjectEntityValidator projectEntityValidator;
+    private EntityValidator projectEntityValidator;
     private TaskEntityValidator taskEntityValidator;
     private CommandFactory commandFactory;
     private ModelViewDataBuilder projectModelViewBuilder;
@@ -39,7 +40,7 @@ public class ManagerAppController {
     public ManagerAppController(AppBaseDataCore appBaseDataCore,
                                 SessionRequestContent sessionRequestContent,
                                 ProjectRequestValidator projectRequestValidator,
-                                ProjectEntityValidator projectEntityValidator,
+                                EntityValidator projectEntityValidator,
                                 TaskEntityValidator taskEntityValidator,
                                 CommandFactory commandFactory,
                                 @Qualifier("projectModelViewDataBuilderImpl") ModelViewDataBuilder projectModelViewBuilder) {
@@ -107,8 +108,10 @@ public class ManagerAppController {
         Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_FIND_BY_ID);
         command.execute(sessionRequestContent);
         if (sessionRequestContent.isSuccessfulResult()) {
+            project = (Project) sessionRequestContent.getRequestAttributes().get(KeyWordsSessionRequest.PROJECT);
             model = new ModelAndView("/projects/" + id + "/edit");
             model.setViewName("project_by_id_edit");
+            model.addObject(KeyWordsSessionRequest.PROJECT, project);
             projectModelViewBuilder
                     .addAppServers(model)
                     .addDatabases(model)
@@ -120,25 +123,24 @@ public class ManagerAppController {
     }
 
 
-    /*
-    @GetMapping("/{id}/edit")
-    public String editProject(@PathVariable("id") long id,
-                              @ModelAttribute("project") Project project,
-                              Model model) {
-        sessionRequestContent.getRequestParameters().put(KeyWordsApp.PROJECT_ID_FIELD_NAME, "" + id);
-        projectFindByIdCommand.execute(sessionRequestContent);
-        String resultPage;
-        if (sessionRequestContent.isSuccessfulResult()) {
-            project = (Project) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PROJECT);
-            model.addAttribute(KeyWordsRequest.PROJECT, project);
-            resultPage = "project_by_id_edit";
-        } else {
-            resultPage = "projects";
-        }
-        basicInitializeProjectModel(model);
-        return resultPage;
+    @PatchMapping("/{id}")
+    public String updateProject(@PathVariable("id") long id,
+                                @ModelAttribute("project") Project project,
+                                Model model,
+                                BindingResult bindingResult) {
+        HashMap params = sessionRequestContent.getRequestParameters();
+        HashMap attributes = sessionRequestContent.getRequestAttributes();
+        params.put(KeyWordsApp.PROJECT_ID_FIELD_NAME, "" + id);
+        attributes.put(KeyWordsSessionRequest.PROJECT, project);
+        attributes.put(KeyWordsSessionRequest.MODEL, model);
+        sessionRequestContent.setBindingResult(bindingResult);
+        Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_UPDATE);
+        command.execute(sessionRequestContent);
+        String resultView = (String) attributes.get(KeyWordsSessionRequest.RESULT_VIEW);
+        return resultView;
     }
 
+    /*
     @PatchMapping("/{id}")
     public String updateProject(@PathVariable("id") long id,
                                 @ModelAttribute("project") Project project,

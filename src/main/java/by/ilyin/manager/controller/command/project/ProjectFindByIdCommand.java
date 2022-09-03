@@ -15,10 +15,8 @@ import java.util.HashMap;
 @Component
 public class ProjectFindByIdCommand implements Command {
 
-    private static final String SUCCESSFUL_PATH = "projects/";
     private static final String SUCCESSFUL_VIEW = "project_by_id";
-    private static final String UNSUCCESSFUL_PATH = "redirect:/projects";
-    private static final String UNSUCCESSFUL_VIEW = null;
+    private static final String UNSUCCESSFUL_VIEW = "redirect:/projects";
 
     private ProjectService projectService;
     private PreparatoryProjectService preparatoryProjectService;
@@ -37,13 +35,11 @@ public class ProjectFindByIdCommand implements Command {
         if (sessionRequestContent.isSuccessfulResult()) {
             HashMap attributes = sessionRequestContent.getRequestAttributes();
             HashMap params = sessionRequestContent.getRequestParameters();
-            String projectId = (String) params.get(KeyWordsApp.PROJECT_ID_FIELD_NAME);
             Object project = attributes.get(KeyWordsSessionRequest.PROJECT);
-            model = new ModelAndView(SUCCESSFUL_PATH + projectId);
-            model.setViewName(SUCCESSFUL_VIEW);
+            model = new ModelAndView(SUCCESSFUL_VIEW);
             model.addObject(KeyWordsSessionRequest.PROJECT, project);
         } else {
-            model = new ModelAndView(UNSUCCESSFUL_PATH);
+            model = new ModelAndView(UNSUCCESSFUL_VIEW);
         }
         sessionRequestContent.setModelAndViewResult(model);
     }

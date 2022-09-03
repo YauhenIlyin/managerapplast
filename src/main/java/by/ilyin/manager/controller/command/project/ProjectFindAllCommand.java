@@ -15,11 +15,8 @@ import java.util.HashMap;
 @Component
 public class ProjectFindAllCommand implements Command {
 
-
-    private static final String SUCCESSFUL_PATH = "/projects";
     private static final String SUCCESSFUL_VIEW = "projects";
-    private static final String UNSUCCESSFUL_PATH = SUCCESSFUL_PATH;
-    private static final String UNSUCCESSFUL_VIEW = UNSUCCESSFUL_PATH;
+    private static final String UNSUCCESSFUL_VIEW = SUCCESSFUL_VIEW;
 
     private PreparatoryProjectService preparatoryProjectService;
     private ModelViewDataBuilder modelViewDataBuilder;
@@ -34,8 +31,7 @@ public class ProjectFindAllCommand implements Command {
     @Override
     public void execute(SessionRequestContent sessionRequestContent) {
         preparatoryProjectService.findAllProjects(sessionRequestContent);
-        ModelAndView modelAndView = new ModelAndView(SUCCESSFUL_PATH);
-        modelAndView.setViewName(SUCCESSFUL_VIEW);
+        ModelAndView modelAndView = new ModelAndView(SUCCESSFUL_VIEW);
         HashMap requestAttributes = sessionRequestContent.getRequestAttributes();
         Object projects = requestAttributes.get(KeyWordsSessionRequest.PROJECTS);
         Object page = requestAttributes.get(KeyWordsSessionRequest.PAGE_PAGE);

@@ -16,6 +16,7 @@ public class KeyWordsSessionRequest {
     public static final String FILTER_PROJECT_EMPLOYEE_COUNT_FILTER_NAME = "employeeCount";
 
     public static final String RESULT = "result";
+    public static final String RESULT_VIEW = "resultView";
 
     public static final String PROJECTS = "projects";
     public static final String PROJECT = "project";
@@ -40,6 +41,8 @@ public class KeyWordsSessionRequest {
     public static final String PAGE_ITEMS_COUNT_ON_ONE = "pageItemsCount";
     public static final long PAGE_DEFAULT_COUNT_ITEMS_ON_ONE = 3;
     public static final long PAGE_DEFAULT_CURRENT_NUMBER = 0;
+
+    public static final String MODEL = "model";
 
     private KeyWordsSessionRequest() {
     }

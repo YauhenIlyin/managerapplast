@@ -2,12 +2,12 @@ package by.ilyin.manager.util.validator.impl;
 
 import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.evidence.KeyWordsApp;
-import by.ilyin.manager.util.validator.ProjectEntityValidator;
+import by.ilyin.manager.util.validator.EntityValidator;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 @Component
-public class ProjectEntityValidatorImpl implements ProjectEntityValidator {
+public class ProjectEntityValidatorImpl implements EntityValidator {
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -16,9 +16,7 @@ public class ProjectEntityValidatorImpl implements ProjectEntityValidator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        System.out.println(target.getClass());
         if (target != null && supports(target.getClass())) {
-            System.out.println("into validator"); //todo
             Project project = (Project) target;
             if (project.getProjectName() == null || project.getProjectName().length() == 0) {
                 errors.rejectValue(KeyWordsApp.PROJECT_NAME_FIELD_NAME, "", "Project name must not be empty");
