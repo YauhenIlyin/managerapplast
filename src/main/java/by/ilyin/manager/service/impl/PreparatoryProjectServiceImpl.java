@@ -54,6 +54,14 @@ public class PreparatoryProjectServiceImpl implements PreparatoryProjectService 
         this.fieldCriteriaTypes = fieldCriteriaTypes;
     }
 
+    @Override
+    public void updateProject(SessionRequestContent sessionRequestContent) {
+        Project project = (Project) sessionRequestContent.getRequestAttributes().get(KeyWordsSessionRequest.PROJECT);
+        long currentId = project.getId();
+        boolean result = false;
+    }
+
+    @Override
     public void findProjectById(SessionRequestContent sessionRequestContent) {
         HashMap params = sessionRequestContent.getRequestParameters();
         HashMap attributes = sessionRequestContent.getRequestAttributes();

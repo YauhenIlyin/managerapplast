@@ -92,30 +92,35 @@ public class ManagerAppController {
                              ModelAndView model) {
         HashMap params = sessionRequestContent.getRequestParameters();
         params.put(KeyWordsApp.PROJECT_ID_FIELD_NAME, "" + id);
-        params.put(KeyWordsSessionRequest.PROJECT, project);
         Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_FIND_BY_ID);
         command.execute(sessionRequestContent);
         return sessionRequestContent.getModelAndViewResult();
     }
 
-
-    /*
-    @GetMapping("/{id}")
-    public String show(@PathVariable("id") int id,
-                       @ModelAttribute("project") Project project,
-                       Model model) {
-        sessionRequestContent.setFiltering(true);
+    @GetMapping("/{id}/edit")
+    public ModelAndView editProject(@PathVariable("id") long id,
+                                    @ModelAttribute("project") Project project,
+                                    ModelAndView model) {
+        HashMap params = sessionRequestContent.getRequestParameters();
+        params.put(KeyWordsApp.PROJECT_ID_FIELD_NAME, "" + id);
         sessionRequestContent.getRequestParameters().put(KeyWordsApp.PROJECT_ID_FIELD_NAME, "" + id);
-        projectFindByIdCommand.execute(sessionRequestContent);
-        String resultPage = "redirect:/projects";
+        Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_FIND_BY_ID);
+        command.execute(sessionRequestContent);
         if (sessionRequestContent.isSuccessfulResult()) {
-            project = (Project) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PROJECT);
-            model.addAttribute(KeyWordsRequest.PROJECT, project);
-            resultPage = "project_by_id";
+            model = new ModelAndView("/projects/" + id + "/edit");
+            model.setViewName("project_by_id_edit");
+            projectModelViewBuilder
+                    .addAppServers(model)
+                    .addDatabases(model)
+                    .addProgLangs(model);
+        } else {
+            model = new ModelAndView("redirect:/projects");
         }
-        return resultPage;
+        return model;
     }
 
+
+    /*
     @GetMapping("/{id}/edit")
     public String editProject(@PathVariable("id") long id,
                               @ModelAttribute("project") Project project,

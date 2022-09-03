@@ -15,8 +15,12 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-@Scope("prototype")
 public class ProjectUpdateCommand implements Command {
+
+    private static final String SUCCESSFUL_PATH = "projects/";
+    private static final String SUCCESSFUL_VIEW = "project_by_id";
+    private static final String UNSUCCESSFUL_PATH = "redirect:/projects";
+    private static final String UNSUCCESSFUL_VIEW = null;
 
     private ProjectService projectService;
     private PreparatoryProjectService preparatoryProjectService;
@@ -27,6 +31,43 @@ public class ProjectUpdateCommand implements Command {
         this.preparatoryProjectService = preparatoryProjectService;
     }
 
+    @Override
+    public void execute(SessionRequestContent sessionRequestContent) {
+       // preparatoryProjectService.updateProject();
+        try {
+            String currentRole = sessionRequestContent.getAuthDataManager().getCurrentUserRole();
+            Optional<Project> optionalProject = null;
+            if (currentRole.equals(KeyWordsApp.ROLE_ADMIN_VALUE)) {
+               // optionalProject = projectService.findById(currentId);
+            } else {
+              //  optionalProject = projectService.findByIdAndIsDeletedEquals(currentId, Boolean.FALSE);
+            }
+            if (optionalProject.isPresent()) {
+                //result = projectService.update(project);
+            }
+        } catch (ManagerAppAuthException e) {
+            //todo log
+        }
+       // sessionRequestContent.setSuccessfulResult(result);
+    }
+/*
+    String resultPage;
+        if(sessionRequestContent.isSuccessfulResult())
+
+    {
+        project = (Project) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PROJECT);
+        model.addAttribute(KeyWordsRequest.PROJECT, project);
+        resultPage = "project_by_id_edit";
+    } else
+
+    {
+        resultPage = "projects";
+    }
+
+    basicInitializeProjectModel(model);
+        return resultPage;
+*/
+    /*
     @Override
     public void execute(SessionRequestContent sessionRequestContent) {
         Project project = (Project) sessionRequestContent.getRequestAttributes().get(KeyWordsSessionRequest.PROJECT);
@@ -48,4 +89,5 @@ public class ProjectUpdateCommand implements Command {
         }
         sessionRequestContent.setSuccessfulResult(result);
     }
+     */
 }
