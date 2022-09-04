@@ -13,7 +13,7 @@ public class CustomUserValidator implements Validator {
     private final int MIN_PASS_LENGTH = 4;
     private final int MAX_PASS_LENGTH = 36;
 
-    private SignUpService signUpService;
+    private final SignUpService signUpService;
 
     @Autowired
     public CustomUserValidator(SignUpService signUpService) {

@@ -19,7 +19,7 @@ public class ApplicationServer extends BaseEntity {
     @Column(name = KeyWordsApp.APP_SERVERS_NAME)
     private String serverName;
 
-    @OneToMany(mappedBy = "applicationServer", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = KeyWordsApp.PROJECT_APP_SERVER_FIELD_NAME, fetch = FetchType.LAZY)
     private List<Project> projects;
 
     public ApplicationServer() {
@@ -55,10 +55,42 @@ public class ApplicationServer extends BaseEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return Boolean.TRUE;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return Boolean.FALSE;
+        }
+        ApplicationServer that = (ApplicationServer) o;
+        if (id != that.id) {
+            return Boolean.FALSE;
+        }
+        if (serverName != null && !serverName.equals(that.serverName)) {
+            return Boolean.FALSE;
+        }
+        return projects != null && projects.equals(that.projects);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        if (serverName != null) {
+            result = 31 * result + serverName.hashCode();
+        }
+        if (projects != null) {
+            result = 31 * result + projects.hashCode();
+        }
+        return result;
+    }
+
+    @Override
     public String toString() {
-        return "ApplicationServer{" +
-                "id=" + id +
-                ", serverName='" + serverName + '\'' +
-                '}';
+        final StringBuilder sb = new StringBuilder("ApplicationServer{");
+        sb.append("id=").append(id);
+        sb.append(", serverName='").append(serverName).append('\'');
+        sb.append(", projects=").append(projects);
+        sb.append('}');
+        return sb.toString();
     }
 }

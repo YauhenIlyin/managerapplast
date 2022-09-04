@@ -14,8 +14,4 @@ public class ProjectNotFoundException extends Exception {
         super(e);
     }
 
-    public ProjectNotFoundException() {
-
-    }
-
 }

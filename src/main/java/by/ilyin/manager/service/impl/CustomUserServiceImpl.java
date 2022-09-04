@@ -1,11 +1,11 @@
 package by.ilyin.manager.service.impl;
 
-
 import by.ilyin.manager.entity.User;
 import by.ilyin.manager.repository.CustomUserRepository;
 import by.ilyin.manager.service.CustomUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -19,6 +19,7 @@ public class CustomUserServiceImpl implements CustomUserService {
         this.customUserRepository = customUserRepository;
     }
 
+    @Transactional
     public void save(User user) {
         customUserRepository.save(user);
     }
@@ -31,7 +32,6 @@ public class CustomUserServiceImpl implements CustomUserService {
     public Optional<User> findById(Long id) {
         return customUserRepository.findById(id);
     }
-
 
     public Optional<User> findByEmail(String email) {
         return customUserRepository.findByEmail(email);

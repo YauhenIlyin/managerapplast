@@ -48,7 +48,12 @@ public class Task extends BaseEntity {
     public Task() {
     }
 
-    public Task(String name, String description, LocalDateTime creationDateTime, User creator, Project project, boolean isDeleted) {
+    public Task(String name,
+                String description,
+                LocalDateTime creationDateTime,
+                User creator,
+                Project project,
+                boolean isDeleted) {
         this.name = name;
         this.description = description;
         this.creationDateTime = creationDateTime;
@@ -111,5 +116,71 @@ public class Task extends BaseEntity {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return Boolean.TRUE;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return Boolean.FALSE;
+        }
+        Task task = (Task) o;
+        if (id != task.id) {
+            return Boolean.FALSE;
+        }
+        if (isDeleted != task.isDeleted) {
+            return Boolean.FALSE;
+        }
+        if (name != null && !name.equals(task.name)) {
+            return Boolean.FALSE;
+        }
+        if (description != null && !description.equals(task.description)) {
+            return Boolean.FALSE;
+        }
+        if (creationDateTime != null && !creationDateTime.equals(task.creationDateTime)) {
+            return Boolean.FALSE;
+        }
+        if (creator != null && !creator.equals(task.creator)) {
+            return Boolean.FALSE;
+        }
+        return project != null && project.equals(task.project);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        if (name != null) {
+            result = 3 * result + name.hashCode();
+        }
+        if (description != null) {
+            result = 5 * result + description.hashCode();
+        }
+        if (creationDateTime != null) {
+            result = 7 * result + creationDateTime.hashCode();
+        }
+        if (creator != null) {
+            result = 13 * result + creator.hashCode();
+        }
+        if (project != null) {
+            result = 17 * result + project.hashCode();
+        }
+        result = 31 * result + (isDeleted ? 1 : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Task{");
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", description='").append(description).append('\'');
+        sb.append(", creationDateTime=").append(creationDateTime);
+        sb.append(", creator=").append(creator);
+        sb.append(", project=").append(project);
+        sb.append(", isDeleted=").append(isDeleted);
+        sb.append('}');
+        return sb.toString();
     }
 }

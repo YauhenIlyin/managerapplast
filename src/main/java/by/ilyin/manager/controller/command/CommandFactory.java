@@ -1,6 +1,5 @@
 package by.ilyin.manager.controller.command;
 
-
 import by.ilyin.manager.evidence.CommandName;
 import by.ilyin.manager.util.validator.CommandValidator;
 import org.springframework.beans.factory.annotation.Autowired;

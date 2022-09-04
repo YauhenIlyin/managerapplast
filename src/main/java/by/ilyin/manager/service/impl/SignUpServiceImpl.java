@@ -1,11 +1,13 @@
 package by.ilyin.manager.service.impl;
 
 import by.ilyin.manager.entity.User;
+import by.ilyin.manager.evidence.KeyWordsApp;
 import by.ilyin.manager.repository.CustomUserRepository;
 import by.ilyin.manager.service.SignUpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -21,11 +23,11 @@ public class SignUpServiceImpl implements SignUpService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public void register(User user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
-        user.setRole("ROLE_USER");
-        System.out.println(user);
+        user.setRole(KeyWordsApp.ROLE_USER_VALUE);
         userRepository.save(user);
     }
 
@@ -40,5 +42,4 @@ public class SignUpServiceImpl implements SignUpService {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         return optionalUser.isPresent();
     }
-
 }

@@ -12,10 +12,10 @@ import java.util.HashSet;
 @Component
 public class TaskEntityValidator implements RequestValidator, Validator {
 
-    private HashSet<String> taskFieldNamesSet;
+    private final HashSet<String> taskFieldNamesSet;
 
     public TaskEntityValidator() {
-        taskFieldNamesSet = new HashSet<String>();
+        taskFieldNamesSet = new HashSet<>();
         taskFieldNamesSet.add(KeyWordsApp.TASK_ID_FIELD_NAME);
         taskFieldNamesSet.add(KeyWordsApp.TASK_NAME_FIELD_NAME);
         taskFieldNamesSet.add(KeyWordsApp.TASK_DESCRIPTION_FIELD_NAME);

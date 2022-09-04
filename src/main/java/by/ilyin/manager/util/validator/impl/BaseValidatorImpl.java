@@ -10,11 +10,11 @@ public class BaseValidatorImpl implements BaseValidator {
     }
 
     public boolean isValidStrAsIntegerNumber(String numberStr) {
-        boolean isValid = true;
+        boolean isValid = Boolean.TRUE;
         try {
             Long.parseLong(numberStr);
         } catch (NumberFormatException e) {
-            isValid = false;
+            isValid = Boolean.FALSE;
         }
         return isValid;
     }

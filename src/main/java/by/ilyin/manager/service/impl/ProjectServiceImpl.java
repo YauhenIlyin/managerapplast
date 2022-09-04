@@ -2,7 +2,6 @@ package by.ilyin.manager.service.impl;
 
 import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.repository.ProjectRepository;
-import by.ilyin.manager.security.AuthDataManager;
 import by.ilyin.manager.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,12 +17,10 @@ import java.util.Optional;
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
-    private final AuthDataManager authDataManager;
 
     @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository, AuthDataManager authDataManager) {
+    public ProjectServiceImpl(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
-        this.authDataManager = authDataManager;
     }
 
     @Override
@@ -72,7 +69,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public boolean update(Project project) {
-        boolean result = false;
+        boolean result = Boolean.FALSE;
         if (project != null) {
             Optional<Project> optionalProject = findById(project.getId());
             if (optionalProject.isPresent()) {
@@ -85,7 +82,7 @@ public class ProjectServiceImpl implements ProjectService {
                 mainProject.setProgrammingLanguage(project.getProgrammingLanguage());
                 project = mainProject;
                 projectRepository.save(mainProject);
-                result = true;
+                result = Boolean.TRUE;
             }
         }
         return result;
@@ -94,14 +91,14 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public boolean softDelete(Project project) {
-        boolean result = false;
+        boolean result = Boolean.FALSE;
         if (project != null) {
             Optional<Project> optionalProject = findById(project.getId());
             if (optionalProject.isPresent()) {
                 Project mainProject = optionalProject.get();
-                mainProject.setIsDeleted(true);
+                mainProject.setIsDeleted(Boolean.TRUE);
                 projectRepository.save(mainProject);
-                result = true;
+                result = Boolean.TRUE;
             }
         }
         return result;

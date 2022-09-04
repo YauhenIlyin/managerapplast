@@ -4,10 +4,10 @@ import by.ilyin.manager.exception.ManagerAppAuthException;
 
 public interface AuthDataManager {
 
-    public String getCurrentUsername() throws ManagerAppAuthException;
+    String getCurrentUsername() throws ManagerAppAuthException;
 
-    public long getCurrentUserId() throws ManagerAppAuthException;
+    long getCurrentUserId() throws ManagerAppAuthException;
 
-    public String getCurrentUserRole() throws ManagerAppAuthException;
+    String getCurrentUserRole() throws ManagerAppAuthException;
 
 }

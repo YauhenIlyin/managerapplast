@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TaskServiceImpl implements TaskService {
 
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
     @Autowired
     public TaskServiceImpl(TaskRepository taskRepository) {
@@ -29,6 +29,7 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findAllByProjectIdAndIsDeletedEquals(id, isDeleted, pageable);
     }
 
+    @Transactional
     @Override
     public void save(Task task) {
         taskRepository.save(task);

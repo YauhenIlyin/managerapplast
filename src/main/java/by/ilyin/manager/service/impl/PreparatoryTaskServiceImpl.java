@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,12 +24,12 @@ import java.util.Optional;
 @Service
 public class PreparatoryTaskServiceImpl implements PreparatoryTaskService {
 
-    private TaskService taskService;
-    private PreparatoryProjectService preparatoryProjectService;
-    private CustomUserService customUserService;
-    private PageableFilterService pageableFilterService;
-    private BaseValidator baseValidator;
-    private RequestValidator requestValidator;
+    private final TaskService taskService;
+    private final PreparatoryProjectService preparatoryProjectService;
+    private final CustomUserService customUserService;
+    private final PageableFilterService pageableFilterService;
+    private final BaseValidator baseValidator;
+    private final RequestValidator requestValidator;
 
     @Autowired
     public PreparatoryTaskServiceImpl(TaskService taskService,
@@ -50,7 +51,7 @@ public class PreparatoryTaskServiceImpl implements PreparatoryTaskService {
         HashMap<String, String> params = sessionRequestContent.getRequestParameters();
         String projectIdStr = params.get(KeyWordsSessionRequest.PROJECT_ID);
         boolean isNumber = baseValidator.isValidStrAsIntegerNumber(projectIdStr);
-        boolean isSuccessfulResult = false;
+        boolean isSuccessfulResult = Boolean.FALSE;
         if (isNumber) {
             params.put(KeyWordsApp.PROJECT_ID_FIELD_NAME, projectIdStr);
             preparatoryProjectService.findProjectById(sessionRequestContent);
@@ -75,6 +76,7 @@ public class PreparatoryTaskServiceImpl implements PreparatoryTaskService {
         }
     }
 
+    @Transactional
     @Override
     public void createTask(SessionRequestContent sessionRequestContent) {
         HashMap<String, Object> attributes = sessionRequestContent.getRequestAttributes();

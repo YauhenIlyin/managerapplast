@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Component
 public class ProjectModelViewDataBuilderImpl implements ModelViewDataBuilder {
 
-    private AppBaseDataCore appBaseDataCore;
+    private final AppBaseDataCore appBaseDataCore;
 
     @Autowired
     private ProjectModelViewDataBuilderImpl(AppBaseDataCore appBaseDataCore) {

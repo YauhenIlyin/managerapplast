@@ -57,10 +57,10 @@ public class User extends BaseEntity {
     @Transient
     private String repeatPassword;
 
-    @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = PROJECT_CREATOR_FIELD_NAME, fetch = FetchType.LAZY)
     private List<Project> createdProjects;
 
-    @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = TASK_CREATOR_FIELD_NAME, fetch = FetchType.LAZY)
     private List<Task> createdTasks;
 
     @Column(name = USERS_IS_DELETED)
@@ -69,7 +69,17 @@ public class User extends BaseEntity {
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, LocalDateTime registrationDateTime, String role, String username, String password, String repeatPassword, List<Project> createdProjects, List<Task> createdTasks, boolean isDeleted) {
+    public User(String firstName,
+                String lastName,
+                String email,
+                LocalDateTime registrationDateTime,
+                String role,
+                String username,
+                String password,
+                String repeatPassword,
+                List<Project> createdProjects,
+                List<Task> createdTasks,
+                boolean isDeleted) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -177,5 +187,106 @@ public class User extends BaseEntity {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return Boolean.TRUE;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return Boolean.FALSE;
+        }
+        User user = (User) o;
+        if (id != user.id) {
+            return Boolean.FALSE;
+        }
+        if (isDeleted != user.isDeleted) {
+            return Boolean.FALSE;
+        }
+        if (firstName != null && !firstName.equals(user.firstName)) {
+            return Boolean.FALSE;
+        }
+        if (lastName != null && !lastName.equals(user.lastName)) {
+            return Boolean.FALSE;
+        }
+        if (email != null && !email.equals(user.email)) {
+            return Boolean.FALSE;
+        }
+        if (registrationDateTime != null && !registrationDateTime.equals(user.registrationDateTime)) {
+            return Boolean.FALSE;
+        }
+        if (role != null && !role.equals(user.role)) {
+            return Boolean.FALSE;
+        }
+        if (username != null && !username.equals(user.username)) {
+            return Boolean.FALSE;
+        }
+        if (password != null && !password.equals(user.password)) {
+            return Boolean.FALSE;
+        }
+        if (repeatPassword != null && !repeatPassword.equals(user.repeatPassword)) {
+            return Boolean.FALSE;
+        }
+        if (createdProjects != null && !createdProjects.equals(user.createdProjects)) {
+            return Boolean.FALSE;
+        }
+        return createdTasks != null && createdTasks.equals(user.createdTasks);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        if (firstName != null) {
+            result = 31 * result + firstName.hashCode();
+        }
+        if (lastName != null) {
+            result = 31 * result + lastName.hashCode();
+        }
+        if (email != null) {
+            result = 31 * result + email.hashCode();
+        }
+        if (registrationDateTime != null) {
+            result = 31 * result + registrationDateTime.hashCode();
+        }
+        if (role != null) {
+            result = 31 * result + role.hashCode();
+        }
+        if (username != null) {
+            result = 31 * result + username.hashCode();
+        }
+        if (password != null) {
+            result = 31 * result + password.hashCode();
+        }
+        if (repeatPassword != null) {
+            result = 31 * result + repeatPassword.hashCode();
+        }
+        if (createdProjects != null) {
+            result = 31 * result + createdProjects.hashCode();
+        }
+        if (createdTasks != null) {
+            result = 31 * result + createdTasks.hashCode();
+        }
+        result = 31 * result + (isDeleted ? 1 : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("User{");
+        sb.append("id=").append(id);
+        sb.append(", firstName='").append(firstName).append('\'');
+        sb.append(", lastName='").append(lastName).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append(", registrationDateTime=").append(registrationDateTime);
+        sb.append(", role='").append(role).append('\'');
+        sb.append(", username='").append(username).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", repeatPassword='").append(repeatPassword).append('\'');
+        sb.append(", createdProjects=").append(createdProjects);
+        sb.append(", createdTasks=").append(createdTasks);
+        sb.append(", isDeleted=").append(isDeleted);
+        sb.append('}');
+        return sb.toString();
     }
 }

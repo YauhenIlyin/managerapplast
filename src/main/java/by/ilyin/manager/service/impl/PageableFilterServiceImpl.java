@@ -57,6 +57,7 @@ public class PageableFilterServiceImpl implements PageableFilterService {
         return this;
     }
 
+    @Override
     public PageableFilterService addSoftDeleteCriteriaSpecification(SpecificationBuilder builder, String currentUserRole) {
         if (builder == null) {
             builder = new SpecificationBuilder();
@@ -64,13 +65,14 @@ public class PageableFilterServiceImpl implements PageableFilterService {
         try {
             currentUserRole = this.authDataManager.getCurrentUserRole();
         } catch (ManagerAppAuthException e) {
-            e.printStackTrace(); //todo log
+            //todo log
         }
         boolean isCorrectConditions = currentUserRole != null && !currentUserRole.equals(KeyWordsApp.ROLE_ADMIN_VALUE);
         return addCriteria(builder, isCorrectConditions, IS_DELETED_FIELD_NAME,
                 KeyWordsSessionRequest.FILTER_OPERATION_EQUALS, Boolean.FALSE);
     }
 
+    @Override
     public PageableFilterService addCriteria(SpecificationBuilder builder, boolean isCorrectConditions, String fieldName,
                                              String operation, Object value) {
         if (isCorrectConditions) {
@@ -82,6 +84,7 @@ public class PageableFilterServiceImpl implements PageableFilterService {
         return this;
     }
 
+    @Override
     public PageableFilterService addCriteria(SpecificationBuilder builder, boolean isCorrectConditions, String fieldName,
                                              String operation, String index, List list) {
         if (isCorrectConditions) {

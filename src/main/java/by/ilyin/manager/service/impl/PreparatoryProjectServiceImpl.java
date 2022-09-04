@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -54,9 +55,10 @@ public class PreparatoryProjectServiceImpl implements PreparatoryProjectService 
         this.fieldCriteriaTypes = fieldCriteriaTypes;
     }
 
+    @Transactional
     @Override
     public void deleteProject(SessionRequestContent sessionRequestContent) {
-        boolean isSuccessful = false;
+        boolean isSuccessful = Boolean.FALSE;
         HashMap<String, Object> attributes = sessionRequestContent.getRequestAttributes();
         HashMap<String, String> params = sessionRequestContent.getRequestParameters();
         Project currentProject = (Project) attributes.get(KeyWordsSessionRequest.PROJECT);
@@ -77,6 +79,7 @@ public class PreparatoryProjectServiceImpl implements PreparatoryProjectService 
         sessionRequestContent.setSuccessfulResult(isSuccessful);
     }
 
+    @Transactional
     @Override
     public void updateProject(SessionRequestContent sessionRequestContent) {
         HashMap attributes = sessionRequestContent.getRequestAttributes();
@@ -134,6 +137,7 @@ public class PreparatoryProjectServiceImpl implements PreparatoryProjectService 
         }
     }
 
+    @Transactional
     @Override
     public void createProject(SessionRequestContent sessionRequestContent) {
         HashMap params = sessionRequestContent.getRequestAttributes();
@@ -152,7 +156,6 @@ public class PreparatoryProjectServiceImpl implements PreparatoryProjectService 
         projectService.save(project);
         sessionRequestContent.setSuccessfulResult(Boolean.TRUE);
     }
-
 
     @Override
     public void findAllProjects(SessionRequestContent sessionRequestContent) {

@@ -17,9 +17,9 @@ import java.util.List;
 @Component
 public class AppBaseDataCore {
 
-    private DatabaseService databaseService;
-    private ProgrammingLanguageService programmingLanguageService;
-    private ApplicationServerService applicationServerService;
+    private final DatabaseService databaseService;
+    private final ProgrammingLanguageService programmingLanguageService;
+    private final ApplicationServerService applicationServerService;
     private List<Database> databaseList;
     private List<ProgrammingLanguage> programmingLanguageList;
     private List<ApplicationServer> applicationServerList;

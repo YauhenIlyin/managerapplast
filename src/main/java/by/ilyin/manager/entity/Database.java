@@ -19,7 +19,7 @@ public class Database extends BaseEntity {
     @Column(name = KeyWordsApp.DATABASES_NAME)
     private String databaseName;
 
-    @OneToMany(mappedBy = "database", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = KeyWordsApp.PROJECT_DATABASE_FIELD_NAME, fetch = FetchType.LAZY)
     private List<Project> projects;
 
     public Database() {
@@ -55,10 +55,42 @@ public class Database extends BaseEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return Boolean.TRUE;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return Boolean.FALSE;
+        }
+        Database database = (Database) o;
+        if (id != database.id) {
+            return Boolean.FALSE;
+        }
+        if (databaseName != null && !databaseName.equals(database.databaseName)) {
+            return Boolean.FALSE;
+        }
+        return projects != null && projects.equals(database.projects);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        if (databaseName != null) {
+            result = 31 * result + databaseName.hashCode();
+        }
+        if (projects != null) {
+            result = 31 * result + projects.hashCode();
+        }
+        return result;
+    }
+
+    @Override
     public String toString() {
-        return "Database{" +
-                "id=" + id +
-                ", databaseName='" + databaseName + '\'' +
-                '}';
+        final StringBuilder sb = new StringBuilder("Database{");
+        sb.append("id=").append(id);
+        sb.append(", databaseName='").append(databaseName).append('\'');
+        sb.append(", projects=").append(projects);
+        sb.append('}');
+        return sb.toString();
     }
 }

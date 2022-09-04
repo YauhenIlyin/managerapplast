@@ -6,8 +6,6 @@ import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.entity.Task;
 import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.service.PreparatoryTaskService;
-import by.ilyin.manager.service.ProjectService;
-import by.ilyin.manager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;

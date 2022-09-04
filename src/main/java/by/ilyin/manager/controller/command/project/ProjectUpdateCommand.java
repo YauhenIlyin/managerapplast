@@ -5,7 +5,6 @@ import by.ilyin.manager.controller.command.SessionRequestContent;
 import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.service.PreparatoryProjectService;
-import by.ilyin.manager.service.ProjectService;
 import by.ilyin.manager.util.ModelViewDataBuilder;
 import by.ilyin.manager.util.validator.EntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +21,14 @@ public class ProjectUpdateCommand implements Command {
     private static final String SUCCESSFUL_VIEW = "project_by_id";
     private static final String UNSUCCESSFUL_VIEW = "project_by_id_edit";
 
-    private ProjectService projectService;
     private PreparatoryProjectService preparatoryProjectService;
     private EntityValidator entityValidator;
     private ModelViewDataBuilder modelViewDataBuilder;
 
     @Autowired
-    public ProjectUpdateCommand(ProjectService projectService,
-                                PreparatoryProjectService preparatoryProjectService,
+    public ProjectUpdateCommand(PreparatoryProjectService preparatoryProjectService,
                                 ModelViewDataBuilder modelViewDataBuilder,
                                 @Qualifier("projectEntityValidatorImpl") EntityValidator entityValidator) {
-        this.projectService = projectService;
         this.preparatoryProjectService = preparatoryProjectService;
         this.modelViewDataBuilder = modelViewDataBuilder;
         this.entityValidator = entityValidator;

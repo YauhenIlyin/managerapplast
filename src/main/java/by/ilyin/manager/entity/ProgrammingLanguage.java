@@ -19,7 +19,7 @@ public class ProgrammingLanguage extends BaseEntity {
     @Column(name = KeyWordsApp.PROGRAM_LANG_NAME)
     private String languageName;
 
-    @OneToMany(mappedBy = "programmingLanguage")
+    @OneToMany(mappedBy = KeyWordsApp.PROJECT_PROG_LANG_FIELD_NAME)
     private List<Project> projects;
 
     public ProgrammingLanguage() {
@@ -55,11 +55,43 @@ public class ProgrammingLanguage extends BaseEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return Boolean.TRUE;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return Boolean.FALSE;
+        }
+        ProgrammingLanguage that = (ProgrammingLanguage) o;
+        if (id != that.id) {
+            return Boolean.FALSE;
+        }
+        if (languageName != null && !languageName.equals(that.languageName)) {
+            return Boolean.FALSE;
+        }
+        return projects != null && projects.equals(that.projects);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        if (languageName != null) {
+            result = 31 * result + languageName.hashCode();
+        }
+        if (projects != null) {
+            result = 31 * result + projects.hashCode();
+        }
+        return result;
+    }
+
+    @Override
     public String toString() {
-        return "ProgrammingLanguage{" +
-                "id=" + id +
-                ", languageName='" + languageName + '\'' +
-                '}';
+        final StringBuilder sb = new StringBuilder("ProgrammingLanguage{");
+        sb.append("id=").append(id);
+        sb.append(", languageName='").append(languageName).append('\'');
+        sb.append(", projects=").append(projects);
+        sb.append('}');
+        return sb.toString();
     }
 }
 

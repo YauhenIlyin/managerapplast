@@ -5,7 +5,7 @@ public class SearchCriteria {
     private String fieldName;
     private String operation;
     private Object value;
-    private boolean isAndCriteria = false;
+    private boolean isAndCriteria = Boolean.FALSE;
 
     public SearchCriteria() {
     }

@@ -3,18 +3,15 @@ package by.ilyin.manager.util.validator.impl;
 import by.ilyin.manager.evidence.KeyWordsApp;
 import by.ilyin.manager.util.validator.RequestValidator;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
-
 import java.util.HashSet;
 
 @Component
 public class ProjectRequestValidator implements RequestValidator {
 
-    private HashSet<String> projectFieldNamesSet;
+    private final HashSet<String> projectFieldNamesSet;
 
     public ProjectRequestValidator() {
-        projectFieldNamesSet = new HashSet<String>();
+        projectFieldNamesSet = new HashSet<>();
         projectFieldNamesSet.add(KeyWordsApp.PROJECT_ID_FIELD_NAME);
         projectFieldNamesSet.add(KeyWordsApp.PROJECT_NAME_FIELD_NAME);
         projectFieldNamesSet.add(KeyWordsApp.PROJECT_DESCRIPTION_FIELD_NAME);

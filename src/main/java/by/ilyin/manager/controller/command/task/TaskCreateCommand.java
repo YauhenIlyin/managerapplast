@@ -3,7 +3,6 @@ package by.ilyin.manager.controller.command.task;
 import by.ilyin.manager.controller.command.Command;
 import by.ilyin.manager.controller.command.SessionRequestContent;
 import by.ilyin.manager.evidence.KeyWordsApp;
-import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.service.PreparatoryTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
