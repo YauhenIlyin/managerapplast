@@ -2,45 +2,41 @@ package by.ilyin.manager.controller.command.task;
 
 import by.ilyin.manager.controller.command.Command;
 import by.ilyin.manager.controller.command.SessionRequestContent;
-import by.ilyin.manager.entity.Task;
-import by.ilyin.manager.entity.User;
+import by.ilyin.manager.evidence.KeyWordsApp;
 import by.ilyin.manager.evidence.KeyWordsSessionRequest;
-import by.ilyin.manager.exception.ManagerAppAuthException;
-import by.ilyin.manager.service.CustomUserService;
-import by.ilyin.manager.service.TaskService;
-import org.springframework.context.annotation.Scope;
+import by.ilyin.manager.service.PreparatoryTaskService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Optional;
+import java.util.HashMap;
 
 @Component
-@Scope("prototype")
 public class TaskCreateCommand implements Command {
 
-    private CustomUserService customUserService;
-    private TaskService taskService;
+    private static final String SUCCESSFUL_VIEW = "redirect:/projects/";
+    private static final String UNSUCCESSFUL_VIEW = "redirect:/projects";
 
-    public TaskCreateCommand(CustomUserService customUserService, TaskService taskService) {
-        this.customUserService = customUserService;
-        this.taskService = taskService;
+    private PreparatoryTaskService preparatoryTaskService;
+
+    @Autowired
+    public TaskCreateCommand(PreparatoryTaskService preparatoryTaskService) {
+        this.preparatoryTaskService = preparatoryTaskService;
     }
 
     @Override
     public void execute(SessionRequestContent sessionRequestContent) {
-        System.out.println("task create command");
-        Task task = (Task) sessionRequestContent.getRequestAttributes().get(KeyWordsSessionRequest.TASK);
-        long creatorId = 0;
-        try {
-            creatorId = sessionRequestContent.getAuthDataManager().getCurrentUserId();
-            Optional<User> optionalUser = customUserService.findById(creatorId);
-            if (optionalUser.isPresent()) {
-                task.setCreator(optionalUser.get());
-                System.out.println("taaask" + task.getId());
-                taskService.save(task);
-                sessionRequestContent.setSuccessfulResult(true);
-            }
-        } catch (ManagerAppAuthException e) {
-            //todo log
+        preparatoryTaskService.createTask(sessionRequestContent);
+        HashMap<String, String> params = sessionRequestContent.getRequestParameters();
+        String resultView;
+        ModelAndView model;
+        if (sessionRequestContent.isSuccessfulResult()) {
+            String currentProjectId = params.get(KeyWordsApp.PROJECT_ID_FIELD_NAME);
+            resultView = SUCCESSFUL_VIEW + currentProjectId + "/tasks";
+        } else {
+            resultView = UNSUCCESSFUL_VIEW;
         }
+        model = new ModelAndView(resultView);
+        sessionRequestContent.setModelAndViewResult(model);
     }
 }

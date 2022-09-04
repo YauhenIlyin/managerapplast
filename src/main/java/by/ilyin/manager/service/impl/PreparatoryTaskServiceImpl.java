@@ -1,7 +1,9 @@
 package by.ilyin.manager.service.impl;
 
 import by.ilyin.manager.controller.command.SessionRequestContent;
+import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.entity.Task;
+import by.ilyin.manager.entity.User;
 import by.ilyin.manager.evidence.KeyWordsApp;
 import by.ilyin.manager.evidence.KeyWordsSessionRequest;
 import by.ilyin.manager.exception.ManagerAppAuthException;
@@ -16,12 +18,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PreparatoryTaskServiceImpl implements PreparatoryTaskService {
 
     private TaskService taskService;
     private PreparatoryProjectService preparatoryProjectService;
+    private CustomUserService customUserService;
     private PageableFilterService pageableFilterService;
     private BaseValidator baseValidator;
     private RequestValidator requestValidator;
@@ -29,11 +33,13 @@ public class PreparatoryTaskServiceImpl implements PreparatoryTaskService {
     @Autowired
     public PreparatoryTaskServiceImpl(TaskService taskService,
                                       PreparatoryProjectService preparatoryProjectService,
+                                      CustomUserService customUserService,
                                       PageableFilterService pageableFilterService,
                                       BaseValidator baseValidator,
                                       @Qualifier("taskRequestValidator") RequestValidator requestValidator) {
         this.taskService = taskService;
         this.preparatoryProjectService = preparatoryProjectService;
+        this.customUserService = customUserService;
         this.pageableFilterService = pageableFilterService;
         this.baseValidator = baseValidator;
         this.requestValidator = requestValidator;
@@ -71,7 +77,28 @@ public class PreparatoryTaskServiceImpl implements PreparatoryTaskService {
 
     @Override
     public void createTask(SessionRequestContent sessionRequestContent) {
-
+        HashMap<String, Object> attributes = sessionRequestContent.getRequestAttributes();
+        preparatoryProjectService.findProjectById(sessionRequestContent);
+        boolean isCorrectProjectId = sessionRequestContent.isSuccessfulResult();
+        if (isCorrectProjectId) {
+            boolean isSuccessfulResult = Boolean.FALSE;
+            try {
+                long creatorId;
+                creatorId = sessionRequestContent.getAuthDataManager().getCurrentUserId();
+                Optional<User> optionalUser = customUserService.findById(creatorId);
+                if (optionalUser.isPresent()) {
+                    Task task = (Task) attributes.get(KeyWordsSessionRequest.TASK);
+                    Project project = (Project) attributes.get(KeyWordsSessionRequest.PROJECT);
+                    task.setCreator(optionalUser.get());
+                    task.setProject(project);
+                    taskService.save(task);
+                    isSuccessfulResult = Boolean.TRUE;
+                }
+            } catch (ManagerAppAuthException e) {
+                //todo log
+            }
+            sessionRequestContent.setSuccessfulResult(isSuccessfulResult);
+        }
     }
 
     @Override

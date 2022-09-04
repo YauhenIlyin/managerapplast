@@ -4,6 +4,7 @@ import by.ilyin.manager.controller.command.Command;
 import by.ilyin.manager.controller.command.CommandFactory;
 import by.ilyin.manager.controller.command.SessionRequestContent;
 import by.ilyin.manager.entity.Project;
+import by.ilyin.manager.entity.Task;
 import by.ilyin.manager.evidence.CommandName;
 import by.ilyin.manager.evidence.KeyWordsApp;
 import by.ilyin.manager.evidence.KeyWordsSessionRequest;
@@ -151,51 +152,35 @@ public class ManagerAppController {
         return model;
     }
 
-    /*
-
     @GetMapping("{projectId}/tasks/new")
-    public String projectCreationPage(@PathVariable("projectId") long projectId,
-                                      @ModelAttribute Task task,
-                                      Model model) {
-        String resultPage = "redirect:/projects";
-        sessionRequestContent.setFiltering(true);
-        sessionRequestContent.getRequestParameters().put(KeyWordsApp.PROJECT_ID_FIELD_NAME, "" + projectId);
-        projectFindByIdCommand.execute(sessionRequestContent);
+    public ModelAndView projectCreationPage(@PathVariable("projectId") long projectId,
+                                            @ModelAttribute Task task,
+                                            ModelAndView model) {
+        HashMap params = sessionRequestContent.getRequestParameters();
+        params.put(KeyWordsApp.PROJECT_ID_FIELD_NAME, "" + projectId);
+        Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_FIND_BY_ID);
+        command.execute(sessionRequestContent);
         if (sessionRequestContent.isSuccessfulResult()) {
-            model.addAttribute(KeyWordsRequest.PROJECT_ID, (Long) projectId);
-            resultPage = "/tasks/task_creation";
+            model.setViewName("tasks/task_creation");
+        } else {
+            model.setViewName("redirect:/projects");
         }
-        return resultPage;
+        return model;
     }
 
     @PostMapping("{projectId}/tasks")
     public ModelAndView projectCreationPage(@PathVariable("projectId") long projectId,
                                             @ModelAttribute("task") @Valid Task task,
-                                            Model model,
+                                            ModelAndView model,
                                             BindingResult bindingResult) {
-        ModelAndView mav = null;
-        sessionRequestContent.setFiltering(true);
-        if (bindingResult.hasErrors()) {
-            mav = new ModelAndView("projects/{projectId}/tasks/new");
-            mav.addObject("task", task);
-            mav.addObject("projectId", projectId);
-            mav.setViewName("tasks/task_creation");
-            System.out.println("error");
-        } else {
-            mav = new ModelAndView("redirect:/projects/{projectId}/tasks");
-            sessionRequestContent.getRequestParameters().put(KeyWordsApp.PROJECT_ID_FIELD_NAME, "" + projectId);
-            projectFindByIdCommand.execute(sessionRequestContent);
-            if (sessionRequestContent.isSuccessfulResult()) {
-                Project project = (Project) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PROJECT);
-                task.setProject(project);
-                sessionRequestContent.getRequestAttributes().put(KeyWordsRequest.TASK, task);
-                sessionRequestContent.setSuccessfulResult(Boolean.FALSE);
-                taskCreateCommand.execute(sessionRequestContent);
-            }
-        }
-        model.addAttribute(KeyWordsRequest.TASK, task);
-        return mav;
+        HashMap attributes = sessionRequestContent.getRequestAttributes();
+        HashMap params = sessionRequestContent.getRequestParameters();
+        Command command = commandFactory.getCurrentCommand(CommandName.TASK_CREATE);
+        params.put(KeyWordsApp.PROJECT_ID_FIELD_NAME, "" + projectId);
+        sessionRequestContent.setBindingResult(bindingResult);
+        attributes.put(KeyWordsSessionRequest.TASK, task);
+        command.execute(sessionRequestContent);
+        model = sessionRequestContent.getModelAndViewResult();
+        return model;
     }
-*/
-
 }
