@@ -5,6 +5,8 @@ import by.ilyin.manager.exception.ManagerAppAuthException;
 
 public interface PreparatoryProjectService {
 
+    void deleteProject(SessionRequestContent sessionRequestContent);
+
     void updateProject(SessionRequestContent sessionRequestContent);
 
     void findProjectById(SessionRequestContent sessionRequestContent);

@@ -140,37 +140,21 @@ public class ManagerAppController {
         return resultView;
     }
 
-    /*
-    @PatchMapping("/{id}")
-    public String updateProject(@PathVariable("id") long id,
-                                @ModelAttribute("project") Project project,
-                                Model model,
-                                BindingResult bindingResult) {
-        projectEntityValidator.validate(project, bindingResult);
-        String resultPage = null;
-        sessionRequestContent.getRequestParameters().put(KeyWordsApp.PROJECT_ID_FIELD_NAME, "" + id);
-        if (bindingResult.hasErrors()) {
-            projectFindByIdCommand.execute(sessionRequestContent);
-            if (sessionRequestContent.isSuccessfulResult()) {
-//                Project mainProject = (Project) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PROJECT);
-                model.addAttribute(KeyWordsRequest.PROJECT, project);
-                resultPage = "project_by_id_edit";
-            }
-        } else {
-            project.setId(id);
-            sessionRequestContent.getRequestAttributes().put(KeyWordsRequest.PROJECT, project);
-            projectUpdateCommand.execute(sessionRequestContent);
-            if (sessionRequestContent.isSuccessfulResult()) {
-                sessionRequestContent.getRequestParameters().put(KeyWordsApp.PROJECT_ID_FIELD_NAME, "" + id);
-                projectFindByIdCommand.execute(sessionRequestContent);
-                project = (Project) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PROJECT);
-                model.addAttribute(KeyWordsRequest.PROJECT, project);
-            }
-            resultPage = "redirect:/projects/{id}";
-        }
-        basicInitializeProjectModel(model);
-        return resultPage;
+    @DeleteMapping("/{id}")
+    public ModelAndView deleteProject(@PathVariable("id") long id,
+                                      @ModelAttribute("project") Project project,
+                                      ModelAndView model) {
+        Command command = commandFactory.getCurrentCommand(CommandName.PROJECT_DELETE);
+        HashMap params = sessionRequestContent.getRequestParameters();
+        HashMap attributes = sessionRequestContent.getRequestAttributes();
+        params.put(KeyWordsApp.PROJECT_ID_FIELD_NAME, "" + id);
+        attributes.put(KeyWordsSessionRequest.PROJECT, project);
+        command.execute(sessionRequestContent);
+        model = sessionRequestContent.getModelAndViewResult();
+        return model;
     }
+
+    /*
 
     @DeleteMapping("/{id}")
     public String deleteProject(@PathVariable("id") long id,

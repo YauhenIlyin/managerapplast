@@ -55,6 +55,29 @@ public class PreparatoryProjectServiceImpl implements PreparatoryProjectService 
     }
 
     @Override
+    public void deleteProject(SessionRequestContent sessionRequestContent) {
+        boolean isSuccessful = false;
+        HashMap<String, Object> attributes = sessionRequestContent.getRequestAttributes();
+        HashMap<String, String> params = sessionRequestContent.getRequestParameters();
+        Project currentProject = (Project) attributes.get(KeyWordsSessionRequest.PROJECT);
+        String pathId = params.get(KeyWordsApp.PROJECT_ID_FIELD_NAME);
+        if (currentProject != null && pathId.equals(currentProject.getId() + "")) {
+            long id = currentProject.getId();
+            String currentRole = getCurrentRole(sessionRequestContent);
+            Optional<Project> optionalProject = null;
+            if (currentRole.equals(KeyWordsApp.ROLE_ADMIN_VALUE)) {
+                optionalProject = projectService.findById(id);
+            } else {
+                optionalProject = projectService.findByIdAndIsDeletedEquals(id, Boolean.FALSE);
+            }
+            if (optionalProject.isPresent()) {
+                isSuccessful = projectService.softDelete(currentProject);
+            }
+        }
+        sessionRequestContent.setSuccessfulResult(isSuccessful);
+    }
+
+    @Override
     public void updateProject(SessionRequestContent sessionRequestContent) {
         HashMap attributes = sessionRequestContent.getRequestAttributes();
         String currentRole = getCurrentRole(sessionRequestContent);
@@ -76,15 +99,12 @@ public class PreparatoryProjectServiceImpl implements PreparatoryProjectService 
         } else {
             sessionRequestContent.setSuccessfulResult(Boolean.FALSE);
         }
-
-
         Project currentProject = (Project) attributes.get(KeyWordsSessionRequest.PROJECT);
         findProjectById(sessionRequestContent);
         if (sessionRequestContent.isSuccessfulResult()) {
             projectService.save(currentProject);
             attributes.put(KeyWordsSessionRequest.PROJECT, currentProject);
         }
-
     }
 
     @Override
