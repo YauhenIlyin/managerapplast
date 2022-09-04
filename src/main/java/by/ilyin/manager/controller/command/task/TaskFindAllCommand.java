@@ -2,54 +2,55 @@ package by.ilyin.manager.controller.command.task;
 
 import by.ilyin.manager.controller.command.Command;
 import by.ilyin.manager.controller.command.SessionRequestContent;
+import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.entity.Task;
-import by.ilyin.manager.evidence.KeyWordsApp;
 import by.ilyin.manager.evidence.KeyWordsSessionRequest;
-import by.ilyin.manager.exception.ManagerAppAuthException;
+import by.ilyin.manager.service.PreparatoryTaskService;
 import by.ilyin.manager.service.ProjectService;
 import by.ilyin.manager.service.TaskService;
-import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Component
-@Scope("prototype")
 public class TaskFindAllCommand implements Command {
 
-    private ProjectService projectService;
-    private TaskService taskService;
+    private static final String SUCCESSFUL_VIEW = "/tasks/tasks";
+    private static final String UNSUCCESSFUL_VIEW = "redirect:/projects/{projectId}";
 
-    public TaskFindAllCommand(ProjectService projectService, TaskService taskService) {
-        this.projectService = projectService;
-        this.taskService = taskService;
+    private PreparatoryTaskService preparatoryTaskService;
+
+    @Autowired
+    public TaskFindAllCommand(PreparatoryTaskService preparatoryTaskService) {
+        this.preparatoryTaskService = preparatoryTaskService;
     }
 
     @Override
     public void execute(SessionRequestContent sessionRequestContent) {
-        String projectId = sessionRequestContent.getRequestParameters().get(KeyWordsApp.PROJECT_ID_FIELD_NAME);
-        try {
-            long projectIdValue = Long.parseLong(projectId);
-            String currentRole = sessionRequestContent.getAuthDataManager().getCurrentUserRole();
-            if (projectService.existsById(projectIdValue)) {
-                List<Task> taskList;
-                Pageable pageable = sessionRequestContent.getPageable();
-                Page page;
-                if (currentRole.equals(KeyWordsApp.ROLE_ADMIN_VALUE)) {
-                    page = taskService.findAllByProjectId(projectIdValue, pageable);
-                } else {
-                    page = taskService.findAllByProjectIdAndIsDeletedEquals(projectIdValue, Boolean.FALSE, pageable);
-                }
-                sessionRequestContent.getRequestAttributes().put(KeyWordsSessionRequest.TASKS, page.getContent());
-                sessionRequestContent.setSuccessfulResult(Boolean.TRUE);
-                sessionRequestContent.getRequestAttributes().put(KeyWordsSessionRequest.PAGE_PAGE, page);
-            }
-        } catch (NumberFormatException e) {
-            //todo log
-        } catch (ManagerAppAuthException e) {
-            //todo log
+        HashMap<String, String> params = sessionRequestContent.getRequestParameters();
+        HashMap<String, Object> attributes = sessionRequestContent.getRequestAttributes();
+        preparatoryTaskService.findAllTasks(sessionRequestContent);
+        String resultView;
+        ModelAndView model;
+        if (sessionRequestContent.isSuccessfulResult()) {
+            List tasks = (List<Task>) attributes.get(KeyWordsSessionRequest.TASKS);
+            Page page = (Page) attributes.get(KeyWordsSessionRequest.PAGE_PAGE);
+            String projectId = params.get(KeyWordsSessionRequest.PROJECT_ID);
+            Project project = (Project) attributes.get(KeyWordsSessionRequest.PROJECT);
+            resultView = SUCCESSFUL_VIEW;
+            model = new ModelAndView(resultView);
+            model.addObject(KeyWordsSessionRequest.TASKS, tasks);
+            model.addObject(KeyWordsSessionRequest.PAGE_PAGE, page);
+            model.addObject(KeyWordsSessionRequest.PROJECT_ID, projectId);
+            model.addObject(KeyWordsSessionRequest.PROJECT, project);
+        } else {
+            resultView = UNSUCCESSFUL_VIEW;
+            model = new ModelAndView(resultView);
         }
+        sessionRequestContent.setModelAndViewResult(model);
     }
 }

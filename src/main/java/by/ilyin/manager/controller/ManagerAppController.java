@@ -7,11 +7,7 @@ import by.ilyin.manager.entity.Project;
 import by.ilyin.manager.evidence.CommandName;
 import by.ilyin.manager.evidence.KeyWordsApp;
 import by.ilyin.manager.evidence.KeyWordsSessionRequest;
-import by.ilyin.manager.util.AppBaseDataCore;
 import by.ilyin.manager.util.ModelViewDataBuilder;
-import by.ilyin.manager.util.validator.EntityValidator;
-import by.ilyin.manager.util.validator.impl.ProjectRequestValidator;
-import by.ilyin.manager.util.validator.impl.TaskEntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -28,27 +24,15 @@ import java.util.HashMap;
 @RequestMapping("/projects")
 public class ManagerAppController {
 
-    private AppBaseDataCore appBaseDataCore;
     private SessionRequestContent sessionRequestContent;
-    private ProjectRequestValidator projectRequestValidator;
-    private EntityValidator projectEntityValidator;
-    private TaskEntityValidator taskEntityValidator;
     private CommandFactory commandFactory;
     private ModelViewDataBuilder projectModelViewBuilder;
 
     @Autowired
-    public ManagerAppController(AppBaseDataCore appBaseDataCore,
-                                SessionRequestContent sessionRequestContent,
-                                ProjectRequestValidator projectRequestValidator,
-                                EntityValidator projectEntityValidator,
-                                TaskEntityValidator taskEntityValidator,
+    public ManagerAppController(SessionRequestContent sessionRequestContent,
                                 CommandFactory commandFactory,
                                 @Qualifier("projectModelViewDataBuilderImpl") ModelViewDataBuilder projectModelViewBuilder) {
-        this.appBaseDataCore = appBaseDataCore;
         this.sessionRequestContent = sessionRequestContent;
-        this.projectRequestValidator = projectRequestValidator;
-        this.projectEntityValidator = projectEntityValidator;
-        this.taskEntityValidator = taskEntityValidator;
         this.commandFactory = commandFactory;
         this.projectModelViewBuilder = projectModelViewBuilder;
     }
@@ -154,46 +138,20 @@ public class ManagerAppController {
         return model;
     }
 
-    /*
-
-    @DeleteMapping("/{id}")
-    public String deleteProject(@PathVariable("id") long id,
-                                @ModelAttribute("project") Project project,
-                                Model model,
-                                BindingResult bindingResult) {
-        String pageResult = "redirect:/projects";
-        if (project != null) {
-            sessionRequestContent.getRequestParameters().put(KeyWordsApp.PROJECT_ID_FIELD_NAME, "" + id);
-            projectFindByIdCommand.execute(sessionRequestContent);
-            if (sessionRequestContent.isSuccessfulResult()) {
-                projectDeleteCommand.execute(sessionRequestContent); //todo  проверить тот ли проект внутри
-            }
-        }
-        return pageResult;
-    }
-
     @GetMapping("/{projectId}/tasks")
-    public String tasksPage(@PathVariable("projectId") long projectId,
-                            Project project,
-                            Model model,
-                            HttpServletRequest request) {
-        String resultPage;
+    public ModelAndView tasksPage(@PathVariable("projectId") long projectId,
+                                  ModelAndView model,
+                                  HttpServletRequest request) {
+        HashMap params = sessionRequestContent.getRequestParameters();
         sessionRequestContent.initialize(request);
-        sessionRequestContent.initializePage(request, taskEntityValidator);
-        sessionRequestContent.getRequestParameters().put(KeyWordsApp.PROJECT_ID_FIELD_NAME, "" + projectId);
-        taskFindAllCommand.execute(sessionRequestContent);
-        if (sessionRequestContent.isSuccessfulResult()) {
-            List<Task> tasks = (List) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.TASKS);
-            Page page = (Page) sessionRequestContent.getRequestAttributes().get(KeyWordsRequest.PAGE_PAGE);
-            model.addAttribute(KeyWordsRequest.TASKS, tasks);
-            model.addAttribute(KeyWordsRequest.PROJECT_ID, projectId);
-            model.addAttribute(KeyWordsRequest.PAGE_PAGE, page);
-            resultPage = "tasks/tasks";
-        } else {
-            resultPage = "redirect:/projects/{projectId}";
-        }
-        return resultPage;
+        params.put(KeyWordsSessionRequest.PROJECT_ID, "" + projectId);
+        Command command = commandFactory.getCurrentCommand(CommandName.TASK_FIND_ALL);
+        command.execute(sessionRequestContent);
+        model = sessionRequestContent.getModelAndViewResult();
+        return model;
     }
+
+    /*
 
     @GetMapping("{projectId}/tasks/new")
     public String projectCreationPage(@PathVariable("projectId") long projectId,

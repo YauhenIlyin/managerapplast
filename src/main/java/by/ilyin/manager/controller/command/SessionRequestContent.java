@@ -96,7 +96,6 @@ public class SessionRequestContent {
     public void initialize(HttpServletRequest request) {
         Iterator<String> iterator;
         String keyWord;
-        requestParameters = new HashMap<>();
         iterator = request.getParameterNames().asIterator();
         while (iterator.hasNext()) {
             keyWord = iterator.next();

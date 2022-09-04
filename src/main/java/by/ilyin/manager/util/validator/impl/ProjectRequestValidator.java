@@ -9,7 +9,7 @@ import org.springframework.validation.Validator;
 import java.util.HashSet;
 
 @Component
-public class ProjectRequestValidator implements Validator, RequestValidator {
+public class ProjectRequestValidator implements RequestValidator {
 
     private HashSet<String> projectFieldNamesSet;
 
@@ -27,16 +27,6 @@ public class ProjectRequestValidator implements Validator, RequestValidator {
         projectFieldNamesSet.add(KeyWordsApp.PROJECT_DATABASE_FIELD_NAME);
         projectFieldNamesSet.add(KeyWordsApp.PROJECTS_IS_DELETED_FIELD_NAME);
     }
-
-    @Override
-    public void validate(Object target, Errors errors) {
-    }
-
-    @Override
-    public boolean supports(Class<?> clazz) {
-        return true;
-    }
-
 
     public boolean isValidFieldName(String fieldName) {
         return projectFieldNamesSet.contains(fieldName);
